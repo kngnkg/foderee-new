@@ -1,0 +1,27 @@
+name: Lint for Go
+
+on:
+  pull_request:
+    paths:
+      - "**/*.go"
+      - .github/workflows/lint-go.yml
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Lint
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          github_token: ${{ github.token }}
+          golangci_lint_flags: "--config=./.golangci.yml ."
+          workdir: backend/
+          fail_on_error: true
+          reporter: github-pr-review
