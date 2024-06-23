@@ -1,6 +1,10 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"log"
+
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
 	r := gin.Default()
@@ -9,5 +13,8 @@ func main() {
 			"message": "pong",
 		})
 	})
-	r.Run() // 0.0.0.0:8080 でサーバーを立てます。
+	// 8080でサーバーを起動
+	if error := r.Run(); error != nil {
+		log.Fatal("Error while running the server")
+	}
 }
