@@ -1,0 +1,41 @@
+{
+    "name": "foderee-rest",
+    "dockerComposeFile": [
+        "../../docker-compose.yml"
+    ],
+    "service": "rest",
+    "workspaceFolder": "/workspace/backend",
+    "postCreateCommand": "sh ../scripts/devcontainer-post-create.sh",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "/bin/bash",
+                        "icon": "terminal-bash"
+                    }
+                },
+                "go.toolsManagement.checkForUpdates": "off",
+                "go.gopath": "/go",
+                "go.formatTool": "gofmt",
+                "go.useLanguageServer": true,
+                "editor.formatOnSave": false,
+                "[go]": {
+                    "editor.formatOnSave": true
+                }
+            },
+            "extensions": [
+				"GitHub.copilot",
+				"GitHub.copilot-chat",
+				"oderwat.indent-rainbow",
+				"eamodio.gitlens",
+				"yzhang.markdown-all-in-one",
+				"PKief.material-icon-theme",
+				"RobbOwen.synthwave-vscode",
+				"golang.go",
+				"ms-vscode.makefile-tools",
+			]
+        }
+    }
+}

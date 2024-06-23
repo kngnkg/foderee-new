@@ -1,0 +1,34 @@
+{
+    "name": "foderee-frontend",
+    "dockerComposeFile": ["../../docker-compose.yml"],
+    "service": "frontend",
+    "workspaceFolder": "/workspace/frontend",
+    "postCreateCommand": "sh ../scripts/devcontainer-post-create.sh",
+    "customizations": {
+      "vscode": {
+        "settings": {
+          "terminal.integrated.defaultProfile.linux": "bash",
+          "terminal.integrated.profiles.linux": {
+            "zsh": {
+              "path": "/bin/bash",
+              "icon": "terminal-bash"
+            }
+          }
+        },
+        "extensions": [
+          "GitHub.copilot",
+          "GitHub.copilot-chat",
+          "oderwat.indent-rainbow",
+          "eamodio.gitlens",
+          "yzhang.markdown-all-in-one",
+          "PKief.material-icon-theme",
+          "RobbOwen.synthwave-vscode",
+          "enkia.tokyo-night",
+          "xabikos.JavaScriptSnippets",
+          "dbaeumer.vscode-eslint",
+          "esbenp.prettier-vscode",
+          "bradlc.vscode-tailwindcss"
+        ]
+      }
+    }
+  }

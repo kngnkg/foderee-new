@@ -1,0 +1,28 @@
+name: Lint for TypeScript
+
+on:
+  pull_request:
+    paths:
+      - "**/*.ts"
+      - "**/*.tsx"
+      - .github/workflows/lint-ts.yml
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Lint
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ github.token }}
+          eslint_flags: "./"
+          workdir: frontend/
+          fail_on_error: true
+          reporter: github-pr-review

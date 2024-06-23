@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  frontend:
+    container_name: foderee-frontend
+    hostname: foderee-frontend
+    build:
+      context: .
+      target: dev
+      dockerfile: ./frontend/Dockerfile
+    tty: true
+    volumes:
+      # `.git` をコンテナ内で参照できるようにするため、
+      # `/workspace` 直下にリポジトリのルートディレクトリごとマウントする
+      - .:/workspace:cached
+    ports:
+      - 3000:3000
+  rest:
+    container_name: foderee-rest
+    hostname: foderee-rest
+    build:
+      context: .
+      target: dev
+      dockerfile: ./backend/Dockerfile
+    tty: true
+    volumes:
+      - .:/workspace:cached
+    ports:
+      - 18080:8080
