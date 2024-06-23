@@ -14,6 +14,7 @@
     "typescript",
     "typescriptreact"
   ],
+  "eslint.useESLintClass": true,
   "files.associations": {
     "*.css": "tailwindcss"
   }
