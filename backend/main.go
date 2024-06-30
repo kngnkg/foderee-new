@@ -22,7 +22,10 @@ func setupRouter() *gin.Engine {
 func postUser(r *gin.Engine) *gin.Engine {
 	r.POST("/user/add", func(c *gin.Context) {
 		var user User
-		c.BindJSON(&user)
+		if err := c.BindJSON(&user); err != nil {
+			c.JSON(400, gin.H{"error": err.Error()})
+			return
+		}
 		c.JSON(200, user)
 	})
 	return r
