@@ -1,0 +1,43 @@
+name: Test for JavaScript and TypeScript
+
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "**.js"
+      - "**.jsx"
+      - "**/*.ts"
+      - "**/*.tsx"
+      - .github/workflows/test-js-and-ts.yml
+  pull_request:
+    paths:
+      - "**.js"
+      - "**.jsx"
+      - "**/*.ts"
+      - "**/*.tsx"
+      - .github/workflows/test-js-and-ts.yml
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: install dependencies
+        run: npm ci
+
+      # TODO: レポートを出力する
+      - name: run tests
+        run: npm run test
