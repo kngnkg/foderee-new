@@ -1,8 +1,9 @@
 import { Header } from '@/components/header'
 import type { MenuTab } from '@/components/menu-tabs'
 import { MenuTabs } from '@/components/menu-tabs'
+import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { UserAvatar } from '@/components/user-avatar'
+import { UserCard } from '@/components/user-card'
 
 interface UserLayoutProps {
   params: { username: string }
@@ -24,8 +25,8 @@ export default function UserLayout({ params, children }: UserLayoutProps) {
   }
 
   const tabs: MenuTab[] = [
-    { label: 'Reviews', value: 'reviews', href: `/${username}` },
-    { label: 'Likes', value: 'likes', href: `/${username}/likes` },
+    { label: 'レビュー', value: 'reviews', href: `/${username}` },
+    { label: 'いいね', value: 'likes', href: `/${username}/likes` },
   ]
 
   return (
@@ -33,9 +34,14 @@ export default function UserLayout({ params, children }: UserLayoutProps) {
       <Header />
       <main className="container flex flex-col gap-6">
         {/* ユーザー情報 */}
-        <div className="mt-6">
-          <p>ユーザー情報</p>
-          <UserAvatar user={user} size="xl" />
+        <div className="mx-auto mt-6 flex items-center justify-between sm:w-4/6">
+          <UserCard user={user} cardSize="l" className="mt-2">
+            <div className="flex gap-4">
+              <p>フォロー</p>
+              <p>フォロワー</p>
+            </div>
+          </UserCard>
+          <Button className="ml-3">フォロー</Button>
         </div>
         {/* タブ */}
         <div>

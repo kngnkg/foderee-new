@@ -6,8 +6,8 @@ interface LayoutProps {
   children: React.ReactNode
 }
 const tabs: MenuTab[] = [
-  { label: 'Home', value: 'home', href: '/' },
-  { label: 'Following', value: 'following', href: '/following' },
+  { label: 'ホーム', value: 'home', href: '/' },
+  { label: 'フォロー中', value: 'following', href: '/following' },
 ]
 
 export default function Layout({ children }: LayoutProps) {
