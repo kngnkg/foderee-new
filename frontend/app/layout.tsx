@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Link from 'next/link'
+import React from 'react'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -16,7 +18,37 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <div>
+          <Link href="/">Home</Link>
+          <br />
+          <Link href="/login">ログイン</Link>
+          <br />
+          <Link href="/following">フォローユーザーの投稿</Link>
+          <br />
+          <Link href="/search">レビュー検索</Link>
+          <br />
+          <Link href="/search/user">ユーザー検索</Link>
+          <br />
+          <Link href="/@username">ユーザーページ</Link>
+          <br />
+          <Link href="/@username/likes">ユーザーがいいねした投稿</Link>
+          <br />
+          <Link href="/reviews/reviewId">レビュー詳細ページ</Link>
+          <br />
+          <Link href="/editor/new">新規エディタ</Link>
+          <br />
+          <Link href="/editor/reviewId">編集エディタ</Link>
+          <br />
+          <Link href="/setting/profile">プロフィールの設定</Link>
+          <br />
+          <Link href="/setting/account">アカウント情報の設定</Link>
+          <br />
+          <Link href="/health">ヘルスチェック</Link>
+          <br />
+        </div>
+        {children}
+      </body>
     </html>
   )
 }
