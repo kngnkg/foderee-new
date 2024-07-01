@@ -26,7 +26,7 @@ export const MenuTabs: React.FC<MenuTabsProps> = ({ tabs, defaultValue }) => {
             <Link href={tab.href}>
               <TabsTrigger
                 value={tab.value}
-                className="border-primary dark:border-primary focus-visible:ring-none rounded-none data-[state=active]:border-b-4"
+                className="focus-visible:ring-none rounded-none border-primary data-[state=active]:border-b-4 dark:border-primary"
               >
                 {tab.label}
               </TabsTrigger>
