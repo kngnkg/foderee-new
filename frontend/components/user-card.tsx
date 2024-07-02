@@ -1,5 +1,5 @@
 import { UserAvatar } from '@/components/user-avatar'
-import type { User } from '@/types'
+import type { User } from '@/types/user'
 
 interface UserCardProps {
   user: Pick<User, 'username' | 'immutableId' | 'displayName' | 'avatarUrl'>

@@ -1,7 +1,7 @@
 import { Icon } from '@/components/icon'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
-import type { User } from '@/types'
+import type { User } from '@/types/user'
 
 interface UserAvatarProps {
   user: Pick<User, 'username' | 'immutableId' | 'displayName' | 'avatarUrl'>
