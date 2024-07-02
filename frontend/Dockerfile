@@ -17,11 +17,3 @@ WORKDIR /workspace/frontend
 RUN npm install -g npm@latest
 
 CMD [ "npm", "run", "dev" ]
-
-FROM node:20.9-bullseye-slim as dev-mock
-
-WORKDIR /workspace/frontend
-
-RUN npm install -g json-server
-
-CMD [ "json-server", "--watch", "db.json", "--host", "0.0.0.0"]

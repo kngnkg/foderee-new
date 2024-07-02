@@ -20,8 +20,7 @@ services:
     hostname: foderee-mock
     build:
       context: .
-      target: dev-mock
-      dockerfile: ./frontend/Dockerfile
+      dockerfile: ./frontend/mock/Dockerfile
     volumes:
       - .:/workspace:cached
     ports:
