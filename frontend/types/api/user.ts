@@ -21,6 +21,19 @@ export function isApiUser(obj: any): obj is ApiUser {
   return apiUserSchema.safeParse(obj).success
 }
 
+export const ApiUsersSchema = z.object({
+  users: z.array(apiUserSchema),
+  nextCursor: z.string().optional(),
+  total: z.number(),
+})
+
+export type ApiUsers = z.infer<typeof ApiUsersSchema>
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isApiUsers(obj: any): obj is ApiUsers {
+  return ApiUsersSchema.safeParse(obj).success
+}
+
 export function toUser(apiUser: ApiUser): User {
   const user = {
     username: apiUser.username,
@@ -38,4 +51,8 @@ export function toUser(apiUser: ApiUser): User {
     throw new Error('Invalid user data')
   }
   return user
+}
+
+export function toUsers(apiUsers: ApiUsers): User[] {
+  return apiUsers.users.map((apiUser) => toUser(apiUser))
 }
