@@ -4,24 +4,55 @@ import { MenuTabs } from '@/components/menu-tabs'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { UserCard } from '@/components/user-card'
+import { isApiUser, toUser } from '@/types/api/user'
+import type { User } from '@/types/user'
+import { notFound } from 'next/navigation'
+import { env } from 'process'
 
 interface UserLayoutProps {
   params: { username: string }
   children: React.ReactNode
 }
 
-export default function UserLayout({ params, children }: UserLayoutProps) {
+const getUser = async (username: string): Promise<User | null> => {
+  try {
+    const resp = await fetch(
+      `${env.API_URL}/users/${username}`,
+      // `${env.API_URL}/users/${encodeURIComponent(username)}`,
+      {
+        cache: 'no-store',
+      },
+    )
+
+    if (!resp) {
+      return null
+    }
+    if (resp.status !== 200) {
+      return null
+    }
+
+    const data = await resp.json()
+    if (!isApiUser(data)) {
+      console.error('Invalid user data:', data)
+      return null
+    }
+
+    return toUser(data)
+  } catch (e) {
+    console.error(e)
+    return null
+  }
+}
+
+export default async function UserLayout({
+  params,
+  children,
+}: UserLayoutProps) {
   const username = decodeURIComponent(params.username)
 
-  // TODO: ユーザー情報を取得する
-  const user = {
-    username,
-    immutableId: '1',
-    displayName: 'User Name',
-    followersCount: 0,
-    followingCount: 0,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+  const user = await getUser(username)
+  if (!user) {
+    return notFound()
   }
 
   const tabs: MenuTab[] = [
