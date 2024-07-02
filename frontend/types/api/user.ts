@@ -2,14 +2,14 @@ import type { User } from '@/types/user'
 
 export type ApiUser = {
   username: string
-  immutableId: string
-  displayName: string
-  avatarUrl?: string
+  immutable_id: string
+  display_name: string
+  avatar_url?: string
   bio?: string
-  followersCount: number
-  followingCount: number
-  createdAt: string
-  updatedAt: string
+  followers_count: number
+  following_count: number
+  created_at: string
+  updated_at: string
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,13 +33,13 @@ export function isApiUser(obj: any): obj is ApiUser {
 export function toUser(user: ApiUser): User {
   return {
     username: user.username,
-    immutableId: user.immutableId,
-    displayName: user.displayName,
-    avatarUrl: user.avatarUrl,
+    immutableId: user.immutable_id,
+    displayName: user.display_name,
+    avatarUrl: user.avatar_url,
     bio: user.bio,
-    followersCount: user.followersCount,
-    followingCount: user.followingCount,
-    createdAt: new Date(user.createdAt),
-    updatedAt: new Date(user.updatedAt),
+    followersCount: user.followers_count,
+    followingCount: user.following_count,
+    createdAt: new Date(user.created_at),
+    updatedAt: new Date(user.updated_at),
   }
 }
