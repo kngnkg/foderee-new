@@ -4,6 +4,7 @@ import { MenuTabs } from '@/components/menu-tabs'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { UserCard } from '@/components/user-card'
+import { UserListDialog } from '@/components/users/user-list-dialog'
 import { isApiUser, toUser } from '@/types/api/user'
 import type { User } from '@/types/user'
 import { notFound } from 'next/navigation'
@@ -68,8 +69,8 @@ export default async function UserLayout({
         <div className="mx-auto mt-6 flex items-center justify-between sm:w-4/6">
           <UserCard user={user} cardSize="l" className="mt-2">
             <div className="flex gap-4">
-              <p>フォロー</p>
-              <p>フォロワー</p>
+              <UserListDialog type="followers" user={user} />
+              <UserListDialog type="followees" user={user} />
             </div>
           </UserCard>
           <Button className="ml-3">フォロー</Button>
