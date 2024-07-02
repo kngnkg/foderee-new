@@ -15,6 +15,16 @@ services:
       - .:/workspace:cached
     ports:
       - 3000:3000
+  mock:
+    container_name: foderee-mock
+    hostname: foderee-mock
+    build:
+      context: .
+      dockerfile: ./frontend/mock/Dockerfile
+    volumes:
+      - .:/workspace:cached
+    ports:
+      - 3001:3000
   rest:
     container_name: foderee-rest
     hostname: foderee-rest
