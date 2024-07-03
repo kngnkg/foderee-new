@@ -1,3 +1,4 @@
+import { env } from '@/env.mjs'
 import {
   setSpotifyClientAccessToken,
   spotifyClient,
@@ -9,11 +10,11 @@ export default async function getAlbum(
   try {
     await setSpotifyClientAccessToken(spotifyClient)
 
-    const resp = await spotifyClient.getAlbum(albumId)
-    const data = resp.body
+    // const resp = await spotifyClient.getAlbum(albumId)
+    // const data = resp.body
 
-    // const resp = await fetch(`${env.MOCK_API_URL}/albums/${albumId}`, {})
-    // const data = await resp.json()
+    const resp = await fetch(`${env.MOCK_API_URL}/albums/${albumId}`, {})
+    const data = await resp.json()
 
     if (!data) {
       throw new Error('Failed to fetch album')
