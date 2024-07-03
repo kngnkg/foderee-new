@@ -10,6 +10,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { UserList } from '@/components/users/user-list'
+import { env } from '@/env.mjs'
 
 interface UserListDialogProps {
   type: 'followers' | 'followees'
@@ -44,7 +46,11 @@ export const UserListDialog: React.FC<UserListDialogProps> = ({
           </DialogTitle>
         </DialogHeader>
         {/* ユーザー一覧 */}
-        <ScrollArea className="h-4/6 w-full border-t border-zinc-700 p-6 pt-16 dark:border-zinc-700" />
+        <ScrollArea className="h-4/6 w-full border-t border-zinc-700 p-6 pt-16 dark:border-zinc-700">
+          <UserList
+            endpoint={`${env.NEXT_PUBLIC_API_URL}/users/${user.username}/${type}`}
+          />
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   )
