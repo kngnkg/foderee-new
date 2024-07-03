@@ -1,45 +1,54 @@
-import type { User } from '@/types/user'
+import * as z from 'zod'
 
-export type ApiUser = {
-  username: string
-  immutableId: string
-  displayName: string
-  avatarUrl?: string
-  bio?: string
-  followersCount: number
-  followingCount: number
-  createdAt: string
-  updatedAt: string
-}
+import { isUser, userNameSchema, type User } from '@/types/user'
+
+export const apiUserSchema = z.object({
+  username: userNameSchema,
+  immutable_id: z.string().uuid(),
+  display_name: z.string(),
+  avatar_url: z.string().optional(),
+  bio: z.string().optional(),
+  followers_count: z.number(),
+  following_count: z.number(),
+  created_at: z.string(),
+  updated_at: z.string(),
+})
+
+export type ApiUser = z.infer<typeof apiUserSchema>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isApiUser(obj: any): obj is ApiUser {
-  return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    typeof obj.username === 'string' &&
-    typeof obj.immutable_id === 'string' &&
-    typeof obj.display_name === 'string' &&
-    (typeof obj.avatar_url === 'undefined' ||
-      typeof obj.avatar_url === 'string') &&
-    (typeof obj.bio === 'undefined' || typeof obj.bio === 'string') &&
-    typeof obj.followers_count === 'number' &&
-    typeof obj.following_count === 'number' &&
-    typeof obj.created_at === 'string' &&
-    typeof obj.updated_at === 'string'
-  )
+  return apiUserSchema.safeParse(obj).success
 }
 
-export function toUser(user: ApiUser): User {
-  return {
-    username: user.username,
-    immutableId: user.immutableId,
-    displayName: user.displayName,
-    avatarUrl: user.avatarUrl,
-    bio: user.bio,
-    followersCount: user.followersCount,
-    followingCount: user.followingCount,
-    createdAt: new Date(user.createdAt),
-    updatedAt: new Date(user.updatedAt),
+export const ApiUsersSchema = z.object({
+  users: z.array(apiUserSchema),
+  next_cursor: z.string().optional(),
+  total: z.number(),
+})
+
+export type ApiUsers = z.infer<typeof ApiUsersSchema>
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isApiUsers(obj: any): obj is ApiUsers {
+  return ApiUsersSchema.safeParse(obj).success
+}
+
+export function toUser(apiUser: ApiUser): User {
+  const user = {
+    username: apiUser.username,
+    immutableId: apiUser.immutable_id,
+    displayName: apiUser.display_name,
+    avatarUrl: apiUser.avatar_url,
+    bio: apiUser.bio,
+    followersCount: apiUser.followers_count,
+    followingCount: apiUser.following_count,
+    createdAt: new Date(apiUser.created_at),
+    updatedAt: new Date(apiUser.updated_at),
   }
+
+  if (!isUser(user)) {
+    throw new Error('Invalid user data')
+  }
+  return user
 }
