@@ -4,7 +4,7 @@ import {
   type UserListResponse,
 } from '@/app/api/utils'
 import { env } from '@/env.mjs'
-import { isApiUsers, toUsers } from '@/types/api/user'
+import { isApiUsers, toUser } from '@/types/api/user'
 
 export const listFollowees = async (
   username: string,
@@ -34,8 +34,8 @@ export const listFollowees = async (
     }
 
     return {
-      users: toUsers(data),
-      nextCursor: data.nextCursor,
+      users: data.users.map((u) => toUser(u)),
+      nextCursor: data.next_cursor,
       total: data.total,
     }
   } catch (e) {

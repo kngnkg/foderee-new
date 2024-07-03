@@ -23,7 +23,7 @@ export function isApiUser(obj: any): obj is ApiUser {
 
 export const ApiUsersSchema = z.object({
   users: z.array(apiUserSchema),
-  nextCursor: z.string().optional(),
+  next_cursor: z.string().optional(),
   total: z.number(),
 })
 
@@ -51,8 +51,4 @@ export function toUser(apiUser: ApiUser): User {
     throw new Error('Invalid user data')
   }
   return user
-}
-
-export function toUsers(apiUsers: ApiUsers): User[] {
-  return apiUsers.users.map((apiUser) => toUser(apiUser))
 }
