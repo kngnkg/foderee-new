@@ -25,3 +25,17 @@ export type UserListResponse = {
   nextCursor: string | undefined
   total: number
 }
+
+export function addUrlParams(url: string, cursor: Cursor) {
+  if (cursor.cursor || cursor.limit) {
+    url += '?'
+    if (cursor.cursor) {
+      url += `cursor=${cursor.cursor}&`
+    }
+    if (cursor.limit) {
+      url += `limit=${cursor.limit}`
+    }
+    url = url.replace(/&$/, '')
+  }
+  return url
+}
