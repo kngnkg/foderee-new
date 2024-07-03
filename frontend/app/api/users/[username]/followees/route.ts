@@ -1,20 +1,11 @@
-import * as z from 'zod'
-
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
 import { errInternal, errNotFound } from '@/app/api/response'
+import type { UserRouteContext } from '@/app/api/route-context'
+import { userRouteContextSchema } from '@/app/api/route-context'
 import { getCursorFromRequest } from '@/app/api/utils'
 import { listFollowees } from '@/service/users/list-followees'
-import { userNameSchema } from '@/types/user'
-
-export const userRouteContextSchema = z.object({
-  params: z.object({
-    username: userNameSchema,
-  }),
-})
-
-export type UserRouteContext = z.infer<typeof userRouteContextSchema>
 
 export async function GET(request: NextRequest, context: UserRouteContext) {
   try {
