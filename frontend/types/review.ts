@@ -1,3 +1,4 @@
+import { albumSchema } from '@/types/album'
 import { userSchema } from '@/types/user'
 import * as z from 'zod'
 
@@ -19,13 +20,6 @@ export const reviewTitleSchema = z
 // TODO: editorjsのデータ構造をzodで定義する
 export const reviewContentSchema = z.any()
 
-export const authorSchema = userSchema.pick({
-  username: true,
-  immutableId: true,
-  displayName: true,
-  avatarUrl: true,
-})
-
 export const reviewSchema = z.object({
   reviewId: z.string().uuid(),
   publishedStatus: z.enum([
@@ -33,8 +27,8 @@ export const reviewSchema = z.object({
     PublishedStatus.Unpublished,
     PublishedStatus.Draft,
   ]),
-  album: z.string().uuid(),
-  author: authorSchema,
+  album: albumSchema,
+  user: userSchema,
   title: reviewTitleSchema,
   content: reviewContentSchema,
   likesCount: z.number(),
@@ -42,5 +36,9 @@ export const reviewSchema = z.object({
   updatedAt: z.date(),
 })
 
-export type Author = z.infer<typeof authorSchema>
 export type Review = z.infer<typeof reviewSchema>
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isReview(obj: any): obj is Review {
+  return reviewSchema.safeParse(obj).success
+}

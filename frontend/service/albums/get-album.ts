@@ -2,11 +2,11 @@ import { env } from '@/env.mjs'
 import {
   setSpotifyClientAccessToken,
   spotifyClient,
-  toAlbum,
 } from '@/service/spotify-client'
-import type { Album } from '@/types/album'
 
-export default async function getAlbum(albumId: string): Promise<Album> {
+export default async function getAlbum(
+  albumId: string,
+): Promise<SpotifyApi.SingleAlbumResponse> {
   try {
     await setSpotifyClientAccessToken(spotifyClient)
 
@@ -20,7 +20,7 @@ export default async function getAlbum(albumId: string): Promise<Album> {
       throw new Error('Failed to fetch album')
     }
 
-    return toAlbum(data)
+    return data
   } catch (e) {
     console.error(e)
     throw new Error('Failed to fetch album')
