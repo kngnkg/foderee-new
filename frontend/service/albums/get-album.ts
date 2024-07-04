@@ -2,11 +2,11 @@ import { env } from '@/env.mjs'
 import {
   setSpotifyClientAccessToken,
   spotifyClient,
+  toAlbum,
 } from '@/service/spotify-client'
+import type { Album } from '@/types/album'
 
-export default async function getAlbum(
-  albumId: string,
-): Promise<SpotifyApi.SingleAlbumResponse> {
+export default async function getAlbum(albumId: string): Promise<Album> {
   try {
     await setSpotifyClientAccessToken(spotifyClient)
 
@@ -14,13 +14,13 @@ export default async function getAlbum(
     // const data = resp.body
 
     const resp = await fetch(`${env.MOCK_API_URL}/albums/${albumId}`, {})
-    const data = await resp.json()
+    const data: SpotifyApi.SingleAlbumResponse = await resp.json()
 
     if (!data) {
       throw new Error('Failed to fetch album')
     }
 
-    return data
+    return toAlbum(data)
   } catch (e) {
     console.error(e)
     throw new Error('Failed to fetch album')
