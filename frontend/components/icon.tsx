@@ -33,7 +33,8 @@ export const Icon: React.FC<IconProps> = ({
   onClick,
   ...props
 }) => {
-  const baseClassName = 'w-6 h-6 text-zinc-500 dark:text-zinc-500'
+  const baseClassName =
+    'cursor-pointer w-6 h-6 text-zinc-500 dark:text-zinc-500'
 
   switch (type) {
     case 'user':
