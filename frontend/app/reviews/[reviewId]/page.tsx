@@ -19,7 +19,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
     return notFound()
   }
 
-  const pathToUser = `/users/${review.user.username}`
+  const pathToUser = `/${review.user.username}`
 
   return (
     <div className="flex justify-center">
