@@ -27,17 +27,17 @@ const fetcher = async (
 export const useUsers = ({ endpoint, limit = 10 }: UseUsersProps): UseUsers => {
   const getKey = (pageIndex: number, previousPageData: UsersWithPagination) => {
     // 最後に到達した場合
-    if (previousPageData && previousPageData.nextCursor === '') {
+    if (previousPageData && previousPageData.offset >= previousPageData.total) {
       return null
     }
 
-    // 最初のページでは、`previousPageData` がない
+    // 最初のページの場合
     if (pageIndex === 0) {
-      return `${endpoint}`
+      return `${endpoint}?offset=0&limit=${limit}`
     }
 
-    // API のエンドポイントにカーソルを追加する
-    return `${endpoint}?cursor=${previousPageData.nextCursor}&limit=${limit}`
+    const nextOffset = previousPageData.offset + previousPageData.limit
+    return `${endpoint}?offset=${nextOffset}&limit=${limit}`
   }
 
   const { data, error, isLoading, isValidating, size, setSize } =

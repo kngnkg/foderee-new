@@ -1,17 +1,17 @@
-import { addUrlParams, type Cursor } from '@/app/api/utils'
 import { env } from '@/env.mjs'
-import { serverFetcher } from '@/lib/utils'
+import { addPaginationParams, serverFetcher } from '@/lib/utils'
 import { isApiUsers, toUser } from '@/types/api/user'
+import type { PaginationParams } from '@/types/pagination'
 import type { UsersWithPagination } from '@/types/user'
 
 export const listFollowees = async (
   username: string,
-  cursor: Cursor,
+  params: PaginationParams,
 ): Promise<UsersWithPagination | null> => {
   try {
-    const url = addUrlParams(
+    const url = addPaginationParams(
       `${env.API_URL}/users/${username}/followees`,
-      cursor,
+      params,
     )
 
     const data = await serverFetcher(url, { cache: 'no-store' })
@@ -22,7 +22,8 @@ export const listFollowees = async (
 
     return {
       users: data.users.map((u) => toUser(u)),
-      nextCursor: data.next_cursor,
+      offset: data.offset,
+      limit: data.limit,
       total: data.total,
     }
   } catch (e) {

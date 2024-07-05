@@ -1,3 +1,4 @@
+import { paginationSchema } from '@/types/pagination'
 import * as z from 'zod'
 
 export const userNameSchema = z.z
@@ -45,13 +46,12 @@ export const userSchema = z.object({
   updatedAt: z.date(),
 })
 
-export const usersWithPaginationSchema = z.object({
+export type User = z.infer<typeof userSchema>
+
+export const usersWithPaginationSchema = paginationSchema.extend({
   users: z.array(userSchema),
-  nextCursor: z.string().optional(),
-  total: z.number(),
 })
 
-export type User = z.infer<typeof userSchema>
 export type UsersWithPagination = z.infer<typeof usersWithPaginationSchema>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

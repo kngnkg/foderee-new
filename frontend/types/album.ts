@@ -1,3 +1,4 @@
+import { paginationSchema } from '@/types/pagination'
 import { z } from 'zod'
 
 export const artistSchema = z.object({
@@ -33,7 +34,12 @@ export const albumSchema = z.object({
   releaseDate: z.date(),
 })
 
+export const albumsWithPaginationSchema = paginationSchema.extend({
+  albums: z.array(albumSchema),
+})
+
 export type Artist = z.infer<typeof artistSchema>
 export type ArtistInfo = z.infer<typeof artistInfoSchema>
 export type Track = z.infer<typeof trackSchema>
 export type Album = z.infer<typeof albumSchema>
+export type AlbumsWithPagination = z.infer<typeof albumsWithPaginationSchema>
