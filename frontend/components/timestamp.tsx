@@ -17,7 +17,6 @@ export const TimeStamp: React.FC<TimeStampProps> = ({ className, date }) => {
 
 const formatTimeDifference = (date: Date): string => {
   const now = new Date()
-
   // dateから現在までの差分を秒で取得
   // getTime()はミリ秒で取得するので1000で割る
   const diffInSeconds = (now.getTime() - date.getTime()) / 1000
@@ -38,7 +37,7 @@ const formatTimeDifference = (date: Date): string => {
   }
 
   const twoWeeksInSeconds = oneDayInSeconds * 14
-  if (diffInSeconds < twoWeeksInSeconds) {
+  if (diffInSeconds < twoWeeksInSeconds + oneDayInSeconds) {
     return `${Math.floor(diffInSeconds / oneDayInSeconds)}日前`
   }
 
