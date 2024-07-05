@@ -1,3 +1,4 @@
+import { clientFetcher } from '@/lib/utils'
 import type { UsersWithPagination } from '@/types/user'
 import useSWRInfinite from 'swr/infinite'
 
@@ -18,13 +19,9 @@ const fetcher = async (
   resource: RequestInfo,
   init?: RequestInit,
 ): Promise<UsersWithPagination> => {
-  const res = await fetch(resource, init)
-  if (!res.ok) {
-    throw new Error('An error occurred while fetching the data.')
-  }
-  const body = await res.json()
-
-  return body
+  const data = await clientFetcher(resource, init)
+  // TODO: エラーハンドリング
+  return data
 }
 
 export const useUsers = ({ endpoint, limit = 10 }: UseUsersProps): UseUsers => {
