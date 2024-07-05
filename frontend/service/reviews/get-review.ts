@@ -1,5 +1,5 @@
 import { env } from '@/env.mjs'
-import getAlbum from '@/service/albums/get-album'
+import getAlbum from '@/lib/spotify/get-album'
 import { toReview } from '@/types/api/review'
 import type { Review } from '@/types/review'
 
