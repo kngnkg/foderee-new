@@ -45,9 +45,21 @@ export const userSchema = z.object({
   updatedAt: z.date(),
 })
 
+export const usersWithPaginationSchema = z.object({
+  users: z.array(userSchema),
+  nextCursor: z.string().optional(),
+  total: z.number(),
+})
+
 export type User = z.infer<typeof userSchema>
+export type UsersWithPagination = z.infer<typeof usersWithPaginationSchema>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isUser(obj: any): obj is User {
   return userSchema.safeParse(obj).success
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isUsersWithPagination(obj: any): obj is UsersWithPagination {
+  return usersWithPaginationSchema.safeParse(obj).success
 }

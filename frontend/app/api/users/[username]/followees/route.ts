@@ -13,16 +13,12 @@ export async function GET(request: NextRequest, context: UserRouteContext) {
 
     const cursor = getCursorFromRequest(request)
 
-    const resp = await listFollowees(params.username, cursor)
-    if (!resp) {
+    const usersWP = await listFollowees(params.username, cursor)
+    if (!usersWP) {
       return errNotFound('user not found')
     }
 
-    return NextResponse.json({
-      users: resp.users,
-      nextCursor: resp.nextCursor,
-      total: resp.total,
-    })
+    return NextResponse.json(usersWP)
   } catch (e) {
     console.error(e)
     return errInternal('internal error')

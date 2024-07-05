@@ -1,15 +1,12 @@
-import {
-  addUrlParams,
-  type Cursor,
-  type UserListResponse,
-} from '@/app/api/utils'
+import { addUrlParams, type Cursor } from '@/app/api/utils'
 import { env } from '@/env.mjs'
 import { isApiUsers, toUser } from '@/types/api/user'
+import type { UsersWithPagination } from '@/types/user'
 
 export const listFollowees = async (
   username: string,
   cursor: Cursor,
-): Promise<UserListResponse | null> => {
+): Promise<UsersWithPagination | null> => {
   try {
     const url = addUrlParams(
       `${env.API_URL}/users/${username}/followees`,

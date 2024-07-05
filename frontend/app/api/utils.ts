@@ -1,4 +1,3 @@
-import type { User } from '@/types/user'
 import type { NextRequest } from 'next/server'
 import { z } from 'zod'
 
@@ -17,13 +16,6 @@ export function getCursorFromRequest(request: NextRequest) {
   const limit = limitStr ? parseInt(limitStr) : null
 
   return cursorSchema.parse({ cursor, limit })
-}
-
-// TODO: 場所を変える
-export type UserListResponse = {
-  users: User[]
-  nextCursor: string | undefined
-  total: number
 }
 
 export function addUrlParams(url: string, cursor: Cursor) {
