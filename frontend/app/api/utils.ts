@@ -9,7 +9,7 @@ export function getPaginationParamsFromRequest(
   const limitStr = searchParams.get('limit')
 
   return {
-    offset: offsetStr ? parseInt(offsetStr) : null,
-    limit: limitStr ? parseInt(limitStr) : null,
+    offset: offsetStr ? parseInt(offsetStr) : undefined,
+    limit: limitStr ? parseInt(limitStr) : undefined,
   }
 }

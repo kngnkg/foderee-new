@@ -1,4 +1,4 @@
-import { toAlbum } from '@/service/spotify-client'
+import { toAlbum } from '@/lib/spotify'
 import { apiUserSchema, toUser } from '@/types/api/user'
 import { isReview, type Review } from '@/types/review'
 import { z } from 'zod'
@@ -39,7 +39,7 @@ export function toReview(
   }
 
   if (!isReview(review)) {
-    throw new Error('Invalid review data')
+    throw new Error(`Invalid review data: ${review}`)
   }
   return review
 }

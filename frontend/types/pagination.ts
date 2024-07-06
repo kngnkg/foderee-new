@@ -14,8 +14,8 @@ export function isPagination(input: any): input is Pagination {
 }
 
 export const paginationParamsSchema = z.object({
-  offset: z.number().nullable(),
-  limit: z.number().nullable(),
+  offset: z.number().optional(),
+  limit: z.number().optional(),
 })
 
 export type PaginationParams = z.infer<typeof paginationParamsSchema>

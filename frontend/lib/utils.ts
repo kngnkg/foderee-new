@@ -1,4 +1,4 @@
-import type { PaginationParams } from '@/types/pagination'
+import type { PaginationParams, SearchParams } from '@/types/pagination'
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
@@ -57,7 +57,10 @@ export const clientFetcher = async (
   }
 }
 
-export function addPaginationParams(url: string, params: PaginationParams) {
+export function addPaginationParams(
+  url: string,
+  params: PaginationParams,
+): string {
   if (params.offset || params.limit) {
     url += '?'
     if (params.offset) {
@@ -69,4 +72,12 @@ export function addPaginationParams(url: string, params: PaginationParams) {
     url = url.replace(/&$/, '')
   }
   return url
+}
+
+export function addSearchParams(url: string, params: SearchParams): string {
+  const urlWithPagination = addPaginationParams(url, {
+    offset: params.offset,
+    limit: params.limit,
+  })
+  return `${urlWithPagination}&q=${params.q}`
 }
