@@ -52,10 +52,15 @@ export const AlbumList: React.FC<AlbumListProps> = ({
                   onClick={() => setAlbum(album)}
                 >
                   <AlbumArt album={album} className="size-14 sm:size-14" />
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1 text-left">
                     <div className="text-sm sm:text-base">{album.name}</div>
                     <div className="text-xs sm:text-sm">
-                      {album.artists[0].name}
+                      {album.artists.map((artist, idx) => (
+                        <span key={idx}>
+                          {artist.name}
+                          {idx !== album.artists.length - 1 && ', '}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 </li>

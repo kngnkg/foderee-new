@@ -28,6 +28,19 @@ export const ReviewForm = ({ initialReview }: ReviewFormProps) => {
       </div>
       <div>
         <AlbumSelectDialog album={album} setAlbum={setAlbum} />
+        {album && (
+          <>
+            <div className="text-sm sm:text-base">{album.name}</div>
+            <div className="text-xs sm:text-sm">
+              {album.artists.map((artist, idx) => (
+                <span key={idx}>
+                  {artist.name}
+                  {idx !== album.artists.length - 1 && ', '}
+                </span>
+              ))}
+            </div>
+          </>
+        )}
       </div>
       <div>
         <EditorBlock
