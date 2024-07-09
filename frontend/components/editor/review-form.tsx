@@ -1,5 +1,6 @@
 'use client'
 
+import { AlbumSelectDialog } from '@/components/editor/album-select-dialog'
 import { EditorBlock } from '@/components/editor/editor'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,7 +11,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { albumIdSchema } from '@/types/album'
+import { albumSimplifiedSchema } from '@/types/album'
 import {
   PublishedStatus,
   publishedStatusSchema,
@@ -18,6 +19,7 @@ import {
   reviewTitleSchema,
   type Review,
 } from '@/types/review'
+import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
 import { FormProvider, useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -28,7 +30,7 @@ interface ReviewFormProps {
 
 const reviewFormSchema = z.object({
   title: reviewTitleSchema,
-  albumId: albumIdSchema,
+  album: albumSimplifiedSchema,
   content: reviewContentSchema,
   publishedStatus: publishedStatusSchema,
 })
@@ -37,10 +39,10 @@ type ReviewForm = z.infer<typeof reviewFormSchema>
 
 export const ReviewForm = ({ initialReview }: ReviewFormProps) => {
   const methods = useForm<ReviewForm>({
-    // schema: reviewFormSchema,
+    resolver: zodResolver(reviewFormSchema),
     defaultValues: {
       title: initialReview ? initialReview.title : '',
-      albumId: initialReview ? initialReview.album.albumId : '',
+      album: initialReview ? initialReview.album : undefined,
       content: initialReview ? initialReview.content : '',
       publishedStatus: initialReview
         ? initialReview.publishedStatus
@@ -60,7 +62,10 @@ export const ReviewForm = ({ initialReview }: ReviewFormProps) => {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={methods.handleSubmit(onSubmit)}
+        className="flex flex-col gap-4"
+      >
         {/* 各種ボタン */}
         <div className="flex items-center justify-between gap-8">
           <Link href="/">キャンセル</Link>
@@ -87,44 +92,27 @@ export const ReviewForm = ({ initialReview }: ReviewFormProps) => {
           </div>
         </div>
         {/* アルバム */}
-        <div>
-          {/* <AlbumSelectDialog album={album} setAlbum={setAlbum} /> */}
-          {/* <AlbumSelectDialog /> */}
-          {/* アルバム名とアーティスト名を表示 */}
-          {/* {album && (
-            <>
-              <div className="text-sm sm:text-base">{album.name}</div>
-              <div className="text-xs sm:text-sm">
-                {album.artists.map((artist, idx) => (
-                  <span key={idx}>
-                    {artist.name}
-                    {idx !== album.artists.length - 1 && ', '}
-                  </span>
-                ))}
-              </div>
-            </>
-          )} */}
-        </div>
-        <div>
-          {/* レビュータイトル */}
-          <FormField
-            control={methods.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>タイトル</FormLabel>
-                <FormControl>
-                  <Input autoFocus placeholder="タイトル" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {/* エディタ */}
-          <EditorBlock
-            initialData={initialReview ? initialReview.content : undefined}
-          />
-        </div>
+        <AlbumSelectDialog
+          initialAlbum={initialReview ? initialReview.album : undefined}
+        />
+        {/* レビュータイトル */}
+        <FormField
+          control={methods.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>タイトル</FormLabel>
+              <FormControl>
+                <Input autoFocus placeholder="タイトル" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {/* エディタ */}
+        <EditorBlock
+          initialData={initialReview ? initialReview.content : undefined}
+        />
       </form>
     </FormProvider>
   )

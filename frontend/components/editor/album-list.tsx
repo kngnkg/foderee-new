@@ -4,10 +4,11 @@ import * as React from 'react'
 
 import { AlbumArt } from '@/components/album-art'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { AlbumSimplified, AlbumsWithPagination } from '@/types/album'
+import type { AlbumsWithPagination } from '@/types/album'
+import { useFormContext } from 'react-hook-form'
 
 interface AlbumListProps {
-  setAlbum: (album: AlbumSimplified) => void
+  onClick: () => void
   data: AlbumsWithPagination[] | undefined
   isLoading: boolean
 }
@@ -15,8 +16,10 @@ interface AlbumListProps {
 export const AlbumList: React.FC<AlbumListProps> = ({
   data,
   isLoading,
-  setAlbum,
+  onClick,
 }) => {
+  const { setValue } = useFormContext()
+
   if (!data) {
     return (
       <>
@@ -49,7 +52,10 @@ export const AlbumList: React.FC<AlbumListProps> = ({
                 <li
                   key={idx}
                   className="flex cursor-pointer items-center gap-4"
-                  onClick={() => setAlbum(album)}
+                  onClick={() => {
+                    setValue('album', album)
+                    onClick()
+                  }}
                 >
                   <AlbumArt album={album} className="size-14 sm:size-14" />
                   <div className="flex flex-col gap-1 text-left">

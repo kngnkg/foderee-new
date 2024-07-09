@@ -23,8 +23,10 @@ export const trackSchema = z.object({
   trackNumber: z.number(),
 })
 
+export const albumIdSchema = z.string()
+
 export const albumSchema = z.object({
-  albumId: z.string(),
+  albumId: albumIdSchema,
   spotifyUri: z.string(),
   spotifyUrl: z.string().url(),
   name: z.string(),
