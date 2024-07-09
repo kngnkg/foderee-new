@@ -43,7 +43,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
         </section>
       </div>
       <div className="fixed bottom-0 flex w-full flex-col pr-0 pt-16 md:sticky md:top-0 md:h-screen md:w-3/12 md:pl-8">
-        <div className="z-10 flex h-16 items-center justify-center border-t border-zinc-700 bg-background dark:border-zinc-700 sm:h-20 sm:rounded-md sm:border">
+        <div className="z-10 flex h-16 items-center justify-center border-t border-zinc-700 bg-background dark:border-zinc-700 md:h-20 md:rounded-md md:border">
           <LikeButton review={review} />
         </div>
       </div>

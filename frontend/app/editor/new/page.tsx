@@ -1,7 +1,9 @@
+import { ReviewForm } from '@/components/editor/review-form'
+
 export default async function NewReviewEditorPage() {
   return (
-    <section>
-      <h1>新規レビュー作成エディタ</h1>
-    </section>
+    <div className="mt-4">
+      <ReviewForm />
+    </div>
   )
 }

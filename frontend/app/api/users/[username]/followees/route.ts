@@ -4,25 +4,21 @@ import { NextResponse } from 'next/server'
 import { errInternal, errNotFound } from '@/app/api/response'
 import type { UserRouteContext } from '@/app/api/route-context'
 import { userRouteContextSchema } from '@/app/api/route-context'
-import { getCursorFromRequest } from '@/app/api/utils'
+import { getPaginationParamsFromRequest } from '@/app/api/utils'
 import { listFollowees } from '@/service/users/list-followees'
 
 export async function GET(request: NextRequest, context: UserRouteContext) {
   try {
     const { params } = userRouteContextSchema.parse(context)
 
-    const cursor = getCursorFromRequest(request)
+    const paginationParams = getPaginationParamsFromRequest(request)
 
-    const resp = await listFollowees(params.username, cursor)
-    if (!resp) {
+    const usersWP = await listFollowees(params.username, paginationParams)
+    if (!usersWP) {
       return errNotFound('user not found')
     }
 
-    return NextResponse.json({
-      users: resp.users,
-      nextCursor: resp.nextCursor,
-      total: resp.total,
-    })
+    return NextResponse.json(usersWP)
   } catch (e) {
     console.error(e)
     return errInternal('internal error')

@@ -9,7 +9,8 @@ export default function ReviewLayout({ children }: ReviewLayoutProps) {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="container flex-1">
-        <div className="mx-auto sm:w-4/6">{children}</div>
+        <div className="sticky top-14 z-10 border-b border-solid border-zinc-700 dark:border-zinc-700" />
+        <div className="md:mx-auto">{children}</div>
       </main>
     </div>
   )

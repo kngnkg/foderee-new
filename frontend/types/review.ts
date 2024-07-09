@@ -20,13 +20,11 @@ export const reviewTitleSchema = z
 // TODO: editorjsのデータ構造をzodで定義する
 export const reviewContentSchema = z.any()
 
+export const publishedStatusSchema = z.nativeEnum(PublishedStatus)
+
 export const reviewSchema = z.object({
   reviewId: z.string().uuid(),
-  publishedStatus: z.enum([
-    PublishedStatus.Published,
-    PublishedStatus.Unpublished,
-    PublishedStatus.Draft,
-  ]),
+  publishedStatus: publishedStatusSchema,
   album: albumSchema,
   user: userSchema,
   title: reviewTitleSchema,

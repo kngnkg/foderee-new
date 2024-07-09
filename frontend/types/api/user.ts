@@ -1,5 +1,6 @@
 import * as z from 'zod'
 
+import { apiPaginationSchema } from '@/types/api/pagination'
 import { isUser, userNameSchema, type User } from '@/types/user'
 
 export const apiUserSchema = z.object({
@@ -21,10 +22,8 @@ export function isApiUser(obj: any): obj is ApiUser {
   return apiUserSchema.safeParse(obj).success
 }
 
-export const ApiUsersSchema = z.object({
+export const ApiUsersSchema = apiPaginationSchema.extend({
   users: z.array(apiUserSchema),
-  next_cursor: z.string().optional(),
-  total: z.number(),
 })
 
 export type ApiUsers = z.infer<typeof ApiUsersSchema>

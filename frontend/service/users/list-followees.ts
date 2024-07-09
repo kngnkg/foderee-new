@@ -1,33 +1,20 @@
-import {
-  addUrlParams,
-  type Cursor,
-  type UserListResponse,
-} from '@/app/api/utils'
 import { env } from '@/env.mjs'
+import { addPaginationParams, serverFetcher } from '@/lib/utils'
 import { isApiUsers, toUser } from '@/types/api/user'
+import type { PaginationParams } from '@/types/pagination'
+import type { UsersWithPagination } from '@/types/user'
 
 export const listFollowees = async (
   username: string,
-  cursor: Cursor,
-): Promise<UserListResponse | null> => {
+  params: PaginationParams,
+): Promise<UsersWithPagination | null> => {
   try {
-    const url = addUrlParams(
+    const url = addPaginationParams(
       `${env.API_URL}/users/${username}/followees`,
-      cursor,
+      params,
     )
-    const resp = await fetch(url, {
-      cache: 'no-store',
-    })
 
-    if (!resp) {
-      return null
-    }
-    if (resp.status !== 200) {
-      return null
-    }
-
-    const data = await resp.json()
-
+    const data = await serverFetcher(url, { cache: 'no-store' })
     if (!isApiUsers(data)) {
       console.error('Invalid users data:', data)
       return null
@@ -35,7 +22,8 @@ export const listFollowees = async (
 
     return {
       users: data.users.map((u) => toUser(u)),
-      nextCursor: data.next_cursor,
+      offset: data.offset,
+      limit: data.limit,
       total: data.total,
     }
   } catch (e) {

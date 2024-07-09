@@ -42,6 +42,7 @@ export const Icon: React.FC<IconProps> = ({
         <AvatarIcon
           onClick={onClick}
           className={cn(baseClassName, className)}
+          role="img"
           {...props}
         />
       )
@@ -50,6 +51,7 @@ export const Icon: React.FC<IconProps> = ({
         <BellIcon
           onClick={onClick}
           className={cn(baseClassName, className)}
+          role="img"
           {...props}
         />
       )
@@ -58,6 +60,7 @@ export const Icon: React.FC<IconProps> = ({
         <MagnifyingGlassIcon
           onClick={onClick}
           className={cn(baseClassName, className)}
+          role="img"
           {...props}
         />
       )
@@ -66,6 +69,7 @@ export const Icon: React.FC<IconProps> = ({
         <Pencil2Icon
           onClick={onClick}
           className={cn(baseClassName, className)}
+          role="img"
           {...props}
         />
       )
@@ -74,6 +78,7 @@ export const Icon: React.FC<IconProps> = ({
         <FileTextIcon
           onClick={onClick}
           className={cn(baseClassName, className)}
+          role="img"
           {...props}
         />
       )
@@ -82,6 +87,7 @@ export const Icon: React.FC<IconProps> = ({
         <HeartIcon
           onClick={onClick}
           className={cn(baseClassName, className)}
+          role="img"
           {...props}
         />
       )
@@ -90,6 +96,7 @@ export const Icon: React.FC<IconProps> = ({
         <HeartFilledIcon
           onClick={onClick}
           className={cn(baseClassName, className)}
+          role="img"
           {...props}
         />
       )
@@ -98,6 +105,7 @@ export const Icon: React.FC<IconProps> = ({
         <ChatBubbleIcon
           onClick={onClick}
           className={cn(baseClassName, className)}
+          role="img"
           {...props}
         />
       )
@@ -106,6 +114,7 @@ export const Icon: React.FC<IconProps> = ({
         <PlusCircledIcon
           onClick={onClick}
           className={cn(baseClassName, className)}
+          role="img"
           {...props}
         />
       )
