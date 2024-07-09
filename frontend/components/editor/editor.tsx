@@ -4,7 +4,6 @@ import { EDITOR_TOOLS } from '@/components/editor/tools.mjs'
 import type { OutputData } from '@editorjs/editorjs'
 import EditorJS from '@editorjs/editorjs'
 import * as React from 'react'
-import { useFormContext } from 'react-hook-form'
 
 interface EditorBlockProps {
   initialData?: OutputData
@@ -12,7 +11,6 @@ interface EditorBlockProps {
 
 export const EditorBlock = ({ initialData }: EditorBlockProps) => {
   const ref = React.useRef<EditorJS>()
-  const { setValue } = useFormContext()
   const [isMounted, setIsMounted] = React.useState<boolean>(false)
 
   const initializeEditor = React.useCallback(async () => {
