@@ -4,6 +4,7 @@ import { EDITOR_TOOLS } from '@/components/editor/tools.mjs'
 import type { OutputData } from '@editorjs/editorjs'
 import EditorJS from '@editorjs/editorjs'
 import * as React from 'react'
+import { useFormContext } from 'react-hook-form'
 
 interface EditorBlockProps {
   initialData?: OutputData
@@ -11,20 +12,44 @@ interface EditorBlockProps {
 
 export const EditorBlock = ({ initialData }: EditorBlockProps) => {
   const ref = React.useRef<EditorJS>()
+  const { setValue } = useFormContext()
+  const [isMounted, setIsMounted] = React.useState<boolean>(false)
 
-  // editorjsを初期化する
+  const initializeEditor = React.useCallback(async () => {
+    if (!ref.current) {
+      const editor = new EditorJS({
+        holder: 'editor',
+        onReady() {
+          ref.current = editor
+        },
+        placeholder: 'レビューを記入してください',
+        inlineToolbar: true,
+        tools: EDITOR_TOOLS,
+        data: initialData,
+        // async onChange(api, event) {
+        //   const data = await api.saver.save()
+        //   setValue('content', data)
+        // },
+      })
+    }
+  }, [initialData, setValue])
+
   React.useEffect(() => {
-    if (ref.current) return
+    if (typeof window !== 'undefined') {
+      setIsMounted(true)
+    }
+  }, [])
 
-    const editor = new EditorJS({
-      holder: 'editor',
-      placeholder: 'レビューを記入してください',
-      tools: EDITOR_TOOLS,
-    })
+  React.useEffect(() => {
+    if (isMounted) {
+      initializeEditor()
 
-    // 複数回初期化しないようにrefに保存
-    ref.current = editor
-  })
+      return () => {
+        ref.current?.destroy()
+        ref.current = undefined
+      }
+    }
+  }, [isMounted, initializeEditor])
 
   return <div id="editor" />
 }

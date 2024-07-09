@@ -23,7 +23,22 @@ const fetcher = async (
 ): Promise<AlbumsWithPagination> => {
   const body = await clientFetcher(resource, init)
   // TODO: エラーハンドリング
-  return body
+
+  return {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    albums: body.albums.map((album: any) => {
+      return {
+        albumId: album.albumId,
+        name: album.name,
+        artists: album.artists,
+        coverUrl: album.coverUrl,
+        releaseDate: new Date(album.releaseDate),
+      }
+    }),
+    offset: body.offset,
+    limit: body.limit,
+    total: body.total,
+  }
 }
 
 export const useAlbums = ({ query, limit = 20 }: UseAlbumsProps): UseAlbums => {
