@@ -32,7 +32,7 @@ export const EditorBlock = ({ initialData }: EditorBlockProps) => {
         // },
       })
     }
-  }, [initialData, setValue])
+  }, [initialData])
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
