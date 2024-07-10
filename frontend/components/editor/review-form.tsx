@@ -151,7 +151,7 @@ export const ReviewForm = ({ initialReview }: ReviewFormProps) => {
             )}
           />
           {/* エディタ */}
-          <div id="editor" />
+          <div id="editor" className="prose prose-invert" />
         </form>
       </FormProvider>
     </Form>
