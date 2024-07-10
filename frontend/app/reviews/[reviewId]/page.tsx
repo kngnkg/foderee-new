@@ -1,4 +1,5 @@
 import { FollowButton } from '@/components/follow-button'
+import { Content } from '@/components/reviews/content'
 import { LikeButton } from '@/components/reviews/like-button'
 import { TimeStamp } from '@/components/timestamp'
 import { Separator } from '@/components/ui/separator'
@@ -24,7 +25,7 @@ export default async function ReviewPage({ params }: ReviewPageProps) {
   return (
     <div className="flex justify-center">
       <div className="mb-16 flex flex-col gap-8 sm:w-7/12">
-        <p>{review.content}</p>
+        <Content data={review.content} />
         <Separator />
         {/* 投稿ユーザーの情報 */}
         <section className="sm:text-md flex gap-2 text-sm text-zinc-400 dark:text-zinc-400">
