@@ -1,3 +1,4 @@
+import type { AvatarSize } from '@/components/user-avatar'
 import { UserAvatar } from '@/components/user-avatar'
 import { cn } from '@/lib/utils'
 import type { User } from '@/types/user'
@@ -47,12 +48,20 @@ export const UserCard: React.FC<UserCardProps> = ({
     },
   })
 
+  let avatarSize: AvatarSize = 'l'
+  if (cardSize === 's') {
+    avatarSize = 'm'
+  }
+  if (cardSize === 'l') {
+    avatarSize = 'xl'
+  }
+
   const pathToUser = `/${user.username}`
 
   return (
     <div className={cn(layoutVariants({ size: cardSize }), className)}>
       <Link href={pathToUser}>
-        <UserAvatar user={user} size={cardSize === 'm' ? 'l' : 'xl'} />
+        <UserAvatar user={user} size={avatarSize} />
       </Link>
       <div className="flex flex-col gap-1">
         <Link href={pathToUser}>
