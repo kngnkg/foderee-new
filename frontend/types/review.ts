@@ -83,7 +83,7 @@ export const reviewContentSchema = z.object({
 export type Content = z.infer<typeof reviewContentSchema>
 
 export const reviewSchema = z.object({
-  reviewId: z.z.string().uuid(),
+  reviewId: z.string().uuid(),
   publishedStatus: publishedStatusSchema,
   album: albumSchema,
   user: userSchema,
