@@ -1,14 +1,13 @@
 'use client'
 
 import type { User } from '@/types/user'
-import Link from 'next/link'
 import { Suspense } from 'react'
 
 import { FollowButton } from '@/components/follow-button'
-import { UserAvatar } from '@/components/user-avatar'
 import { useUsers } from '@/hooks/users/use-users'
 
 import { Button } from '@/components/ui/button'
+import { UserCard } from '@/components/user-card'
 import { UserListSkeleton } from '@/components/users/user-list-skeleton'
 import { UserSkeleton } from '@/components/users/user-skeleton'
 
@@ -35,16 +34,7 @@ export const UserList: React.FC<UserListProps> = ({ endpoint }) => {
               {userWP.users.map((user: User) => (
                 <div key={idx} className="flex items-center justify-between">
                   <Suspense fallback={<UserSkeleton />}>
-                    <div className="sm:text-md flex items-center gap-2 text-sm text-zinc-400 dark:text-zinc-400">
-                      <Link href={`/${user.username}`}>
-                        <UserAvatar user={user} />
-                      </Link>
-                      <div className="flex flex-col">
-                        <Link href={`/${user.username}`}>
-                          {user.displayName}
-                        </Link>
-                      </div>
-                    </div>
+                    <UserCard user={user} cardSize="s" />
                     <FollowButton user={user} />
                   </Suspense>
                 </div>

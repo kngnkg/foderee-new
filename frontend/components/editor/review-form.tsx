@@ -32,9 +32,7 @@ interface ReviewFormProps {
 
 const reviewFormSchema = z.object({
   title: reviewTitleSchema,
-  // albumId: albumIdSchema,
   album: albumSimplifiedSchema,
-  // content: reviewContentSchema,
   publishedStatus: publishedStatusSchema,
 })
 
@@ -45,9 +43,7 @@ export const ReviewForm = ({ initialReview }: ReviewFormProps) => {
     resolver: zodResolver(reviewFormSchema),
     defaultValues: {
       title: initialReview ? initialReview.title : '',
-      // albumId: initialReview ? initialReview.album.albumId : '',
       album: initialReview ? initialReview.album : undefined,
-      // content: initialReview ? initialReview.content : '',
       publishedStatus: initialReview
         ? initialReview.publishedStatus
         : PublishedStatus.Draft,
@@ -90,7 +86,8 @@ export const ReviewForm = ({ initialReview }: ReviewFormProps) => {
   }, [isMounted, initializeEditor])
 
   const onSubmit = async (value: ReviewForm) => {
-    console.log(ref.current?.save())
+    const data = await ref.current?.save()
+    console.log(JSON.stringify(data))
     if (initialReview) {
       console.log('update')
       console.log(value)
@@ -151,7 +148,7 @@ export const ReviewForm = ({ initialReview }: ReviewFormProps) => {
             )}
           />
           {/* エディタ */}
-          <div id="editor" />
+          <div id="editor" className="prose prose-invert" />
         </form>
       </FormProvider>
     </Form>

@@ -1,9 +1,5 @@
-version: "3.9"
-
 services:
   frontend:
-    container_name: foderee-frontend
-    hostname: foderee-frontend
     build:
       context: .
       target: dev
@@ -12,28 +8,43 @@ services:
     volumes:
       # `.git` をコンテナ内で参照できるようにするため、
       # `/workspace` 直下にリポジトリのルートディレクトリごとマウントする
-      - .:/workspace:cached
+      - type: bind
+        source: .
+        target: /workspace
+        consistency: cached
+      # 名前付きボリュームに隠す
+      - type: volume
+        source: front-node-modules
+        target: /workspace/frontend/node_modules
+      - type: volume
+        source: front-next
+        target: /workspace/frontend/.next
     ports:
       - 3000:3000
   mock:
-    container_name: foderee-mock
-    hostname: foderee-mock
     build:
       context: .
       dockerfile: ./frontend/mock/Dockerfile
     volumes:
-      - .:/workspace:cached
+      - type: bind
+        source: ./frontend/mock
+        target: /workspace
+        consistency: cached
     ports:
       - 3001:3000
   rest:
-    container_name: foderee-rest
-    hostname: foderee-rest
     build:
       context: .
       target: dev
       dockerfile: ./backend/Dockerfile
     tty: true
     volumes:
-      - .:/workspace:cached
+      - type: bind
+        source: .
+        target: /workspace
+        consistency: cached
     ports:
       - 18080:8080
+volumes:
+  front-node-modules:
+  front-next:
