@@ -1,7 +1,5 @@
 services:
   frontend:
-    container_name: foderee-frontend
-    hostname: foderee-frontend
     build:
       context: .
       target: dev
@@ -24,8 +22,6 @@ services:
     ports:
       - 3000:3000
   mock:
-    container_name: foderee-mock
-    hostname: foderee-mock
     build:
       context: .
       dockerfile: ./frontend/mock/Dockerfile
@@ -37,8 +33,6 @@ services:
     ports:
       - 3001:3000
   rest:
-    container_name: foderee-rest
-    hostname: foderee-rest
     build:
       context: .
       target: dev
