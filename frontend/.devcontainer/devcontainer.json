@@ -1,6 +1,6 @@
 {
     "name": "foderee-frontend",
-    "dockerComposeFile": ["../../docker-compose.yml"],
+    "dockerComposeFile": ["../../compose.yaml"],
     "service": "frontend",
     "workspaceFolder": "/workspace/frontend",
     "postCreateCommand": "sh ../scripts/devcontainer-post-create.sh",
