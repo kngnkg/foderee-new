@@ -5,7 +5,12 @@ import { env } from './env.mjs'
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: [env.SPOTIFY_CDN_HOST],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: env.SPOTIFY_CDN_HOST,
+      },
+    ],
   },
 }
 
