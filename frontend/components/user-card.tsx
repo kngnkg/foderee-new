@@ -31,7 +31,7 @@ export const UserCard: React.FC<UserCardProps> = ({
   const displayNameVariants = cva('font-bold', {
     variants: {
       size: {
-        s: 'text-md',
+        s: 'sm:text-md text-sm',
         m: 'text-lg',
         l: 'text-md sm:text-xl',
       },
@@ -68,9 +68,11 @@ export const UserCard: React.FC<UserCardProps> = ({
           <p className={displayNameVariants({ size: cardSize })}>
             {user.displayName}
           </p>
-          <p className={usernameVariants({ size: cardSize })}>
-            {user.username}
-          </p>
+          {cardSize !== 's' && (
+            <p className={usernameVariants({ size: cardSize })}>
+              {user.username}
+            </p>
+          )}
         </Link>
         {children}
       </div>
