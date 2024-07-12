@@ -63,11 +63,11 @@ export const AlbumSelectDialog: React.FC<AlbumSelectDialogProps> = ({
         <DialogTrigger>
           <div>
             {album ? (
-              <AlbumArt album={album} />
+              <AlbumArt album={album} size="m" />
             ) : (
               <div className="relative flex items-center justify-center">
-                <Icon type="add" className="absolute size-28 sm:size-28" />
-                <div className="size-28 rounded-none bg-zinc-700 sm:size-48" />
+                <Icon type="add" className="absolute size-16" />
+                <div className="sm:size-38 size-28 rounded-none bg-zinc-700" />
               </div>
             )}
           </div>

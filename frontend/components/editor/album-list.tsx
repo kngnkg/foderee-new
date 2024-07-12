@@ -57,7 +57,7 @@ export const AlbumList: React.FC<AlbumListProps> = ({
                     onClick()
                   }}
                 >
-                  <AlbumArt album={album} className="size-14 sm:size-14" />
+                  <AlbumArt album={album} size="s" />
                   <div className="flex flex-col gap-1 text-left">
                     <div className="text-sm sm:text-base">{album.name}</div>
                     <div className="text-xs sm:text-sm">
