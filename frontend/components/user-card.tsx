@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 export type UserCardSize = 's' | 'm' | 'l'
 
-interface UserCardProps {
+export interface UserCardProps {
   user: Pick<User, 'username' | 'immutableId' | 'displayName' | 'avatarUrl'>
   cardSize?: UserCardSize
   className?: string
