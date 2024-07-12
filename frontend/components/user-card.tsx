@@ -1,5 +1,7 @@
 import { UserAvatar } from '@/components/user-avatar'
+import { cn } from '@/lib/utils'
 import type { User } from '@/types/user'
+import Link from 'next/link'
 
 interface UserCardProps {
   user: Pick<User, 'username' | 'immutableId' | 'displayName' | 'avatarUrl'>
@@ -19,17 +21,21 @@ export const UserCard: React.FC<UserCardProps> = ({
       ? 'flex flex-col items-center gap-2 sm:flex-row sm:gap-4'
       : 'flex items-center gap-2 sm:gap-4'
 
+  const pathToUser = `/${user.username}`
+
   return (
-    <div className={className}>
-      <div className={layout}>
+    <div className={cn(layout, className)}>
+      <Link href={pathToUser}>
         <UserAvatar user={user} size={cardSize === 'l' ? 'xl' : 'm'} />
-        <div className="flex flex-col gap-1">
+      </Link>
+      <div className="flex flex-col gap-1">
+        <Link href={pathToUser}>
           <h1 className="text-md font-bold sm:text-xl">{user.displayName}</h1>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 sm:text-base">
             {user.username}
           </p>
-          {children}
-        </div>
+        </Link>
+        {children}
       </div>
     </div>
   )
