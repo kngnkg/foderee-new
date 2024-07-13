@@ -1,3 +1,4 @@
+import { transformUser } from '@/hooks/transform'
 import { clientFetcher } from '@/lib/utils'
 import type { UsersWithPagination } from '@/types/user'
 import useSWRInfinite from 'swr/infinite'
@@ -21,7 +22,14 @@ const fetcher = async (
 ): Promise<UsersWithPagination> => {
   const data = await clientFetcher(resource, init)
   // TODO: エラーハンドリング
-  return data
+
+  return {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    users: data.users.map((user: any) => transformUser(user)),
+    offset: data.offset,
+    limit: data.limit,
+    total: data.total,
+  }
 }
 
 export const useUsers = ({ endpoint, limit = 10 }: UseUsersProps): UseUsers => {
