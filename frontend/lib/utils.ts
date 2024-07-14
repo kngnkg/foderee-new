@@ -1,5 +1,5 @@
 import type { PaginationParams, SearchParams } from '@/types/pagination'
-import { type ClassValue, clsx } from 'clsx'
+import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
@@ -14,19 +14,36 @@ export const serverFetcher = async (
 ): Promise<any> => {
   try {
     const res = await fetch(resource, init)
+    console.log(res)
 
     if (!res.ok) {
       const errorRes = await res.json()
-      const error = new Error(
-        errorRes.message ?? 'APIリクエスト中にエラーが発生しました',
-      )
+      // const error = new Error(
+      //   errorRes.message ?? 'APIリクエスト中にエラーが発生しました',
+      // )
 
-      throw error
+      switch (res.status) {
+        case 401:
+          // TODO: 認証エラー時の処理
+          throw new Error('認証エラーです。ログインし直してください。')
+        case 403:
+          // TODO: 権限エラー時の処理
+          throw new Error('権限がありません。')
+        // case 404:
+        //   throw new Error('リソースが見つかりません。')
+        default:
+          throw new Error(
+            errorRes.message ?? 'APIリクエスト中にエラーが発生しました',
+          )
+      }
     }
 
-    // TODO: エラーハンドリング
+    const data = await res.json()
+    // if (isApiError(data)) {
+    //   throw new Error(data.message)
+    // }
 
-    return res.json()
+    return data
   } catch (e) {
     throw e
   }

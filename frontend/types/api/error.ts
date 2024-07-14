@@ -6,7 +6,13 @@ export enum ErrorType {
   Forbidden = 'forbidden',
 }
 
-export const errorSchema = z.object({
+export const apiErrorSchema = z.object({
   message: z.string(),
-  type: z.string(),
+  type: z.nativeEnum(ErrorType),
 })
+
+export type ApiError = z.infer<typeof apiErrorSchema>
+
+export function isApiError(obj: unknown): obj is ApiError {
+  return apiErrorSchema.safeParse(obj).success
+}
