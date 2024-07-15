@@ -6,31 +6,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const clientFetcher = async (
-  resource: RequestInfo,
-  init?: RequestInit,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Promise<any> => {
-  try {
-    const res = await fetch(resource, init)
-
-    if (!res.ok) {
-      const errorRes = await res.json()
-      const error = new Error(
-        errorRes.message ?? 'APIリクエスト中にエラーが発生しました',
-      )
-
-      throw error
-    }
-
-    // TODO: エラーハンドリング
-
-    return res.json()
-  } catch (e) {
-    throw e
-  }
-}
-
 export function addPaginationParams(
   url: string,
   params: PaginationParams,

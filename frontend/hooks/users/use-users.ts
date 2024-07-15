@@ -1,5 +1,5 @@
 import { transformUser } from '@/hooks/transform'
-import { clientFetcher } from '@/lib/utils'
+import { clientFetcher } from '@/lib/client-fetcher'
 import type { UsersWithPagination } from '@/types/user'
 import useSWRInfinite from 'swr/infinite'
 

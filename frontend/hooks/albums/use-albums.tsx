@@ -3,7 +3,7 @@ import useSWRInfinite from 'swr/infinite'
 
 import { env } from '@/env.mjs'
 import { transformAlbumSimplified } from '@/hooks/transform'
-import { clientFetcher } from '@/lib/utils'
+import { clientFetcher } from '@/lib/client-fetcher'
 
 interface UseAlbumsProps {
   query: string
