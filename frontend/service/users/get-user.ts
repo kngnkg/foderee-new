@@ -15,7 +15,7 @@ export const getUser = async (username: string): Promise<User | null> => {
         throw new Error('エラーレスポンスの形式が不正です')
       }
 
-      // notfoundの場合はnullを返す
+      // ユーザーが存在しない場合はnullを返す
       if (data.type === ErrorType.EntityNotFound) {
         return null
       }
