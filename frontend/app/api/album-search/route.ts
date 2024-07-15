@@ -31,7 +31,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(albumsWP)
   } catch (e) {
-    console.error(e)
-    return errInternal('internal error')
+    return errInternal(e)
   }
 }
