@@ -8,6 +8,7 @@ import { toExpectedUser } from '@/lib/test-utils'
 import { getUser } from '@/service/users/get-user'
 import { ApiErrorType } from '@/types/api/error'
 import type { ApiUser } from '@/types/api/user'
+import { EntityNotFoundError } from '@/types/error'
 
 jest.mock('@/lib/server-fetcher', () => ({
   serverFetcher: jest.fn(),
@@ -52,20 +53,21 @@ describe('getUser', () => {
     expect(user).toEqual(expected)
   })
 
-  it('ユーザーが存在しない場合はnullを返す', async () => {
+  it('ユーザーが存在しない場合はエラーを返す', async () => {
     const mockEntityNotFoundErrorData = {
       message: 'Entity not found',
       type: ApiErrorType.EntityNotFound,
     }
     mockServerFetcher.mockResolvedValue(mockEntityNotFoundErrorData)
 
-    const user = await getUser('invalidUsername')
+    await expect(getUser('invalidUsername')).rejects.toThrow(
+      EntityNotFoundError,
+    )
 
     expect(mockServerFetcher).toHaveBeenCalledWith(
       `${env.API_URL}/users/invalidUsername`,
       { cache: 'no-store' },
     )
-    expect(user).toBeNull()
   })
 
   it('その他のエラーレスポンスの場合はエラータイプとエラーメッセージを含むエラーを返す', async () => {
