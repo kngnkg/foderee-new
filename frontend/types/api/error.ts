@@ -1,7 +1,8 @@
 import { z } from 'zod'
 
 export enum ErrorType {
-  NotFound = 'not_found',
+  EntityNotFound = 'entity_not_found',
+  EndpointNotFound = 'endpoint_not_found',
   Unauthorized = 'unauthorized',
   Forbidden = 'forbidden',
 }
