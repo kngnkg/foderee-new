@@ -1,5 +1,5 @@
 import { env } from '@/env.mjs'
-import { serverFetcher } from '@/lib/utils'
+import { serverFetcher } from '@/lib/server-fetcher'
 import { ErrorType, isApiError } from '@/types/api/error'
 import { isApiUser, toUser } from '@/types/api/user'
 import type { User } from '@/types/user'

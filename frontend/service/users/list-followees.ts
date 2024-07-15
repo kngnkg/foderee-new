@@ -1,5 +1,6 @@
 import { env } from '@/env.mjs'
-import { addPaginationParams, serverFetcher } from '@/lib/utils'
+import { serverFetcher } from '@/lib/server-fetcher'
+import { addPaginationParams } from '@/lib/utils'
 import { isApiUsers, toUser } from '@/types/api/user'
 import type { PaginationParams } from '@/types/pagination'
 import type { UsersWithPagination } from '@/types/user'

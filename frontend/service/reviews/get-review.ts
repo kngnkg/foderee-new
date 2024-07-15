@@ -1,6 +1,6 @@
 import { env } from '@/env.mjs'
+import { serverFetcher } from '@/lib/server-fetcher'
 import { setSpotifyClientAccessToken, spotifyClient } from '@/lib/spotify'
-import { serverFetcher } from '@/lib/utils'
 import { toReview } from '@/types/api/review'
 import { isReview, type Review } from '@/types/review'
 

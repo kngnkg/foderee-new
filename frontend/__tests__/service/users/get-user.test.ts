@@ -3,8 +3,8 @@
  */
 
 import { env } from '@/env.mjs'
+import { serverFetcher } from '@/lib/server-fetcher'
 import { toExpectedUser } from '@/lib/test-utils'
-import { serverFetcher } from '@/lib/utils'
 import { getUser } from '@/service/users/get-user'
 import { ErrorType } from '@/types/api/error'
 import type { ApiUser } from '@/types/api/user'
