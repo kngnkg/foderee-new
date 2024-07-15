@@ -1,4 +1,4 @@
-import { ErrorType, isApiError } from '@/types/api/error'
+import { ApiErrorType, isApiError } from '@/types/api/error'
 
 // サーバー側でfetchを行う関数
 export const serverFetcher = async (
@@ -23,7 +23,7 @@ export const serverFetcher = async (
           // TODO: 権限エラー時の処理
           throw new Error('権限がありません。')
         case 404:
-          if (errorRes.type === ErrorType.EndpointNotFound) {
+          if (errorRes.type === ApiErrorType.EndpointNotFound) {
             throw new Error('エンドポイントが見つかりませんでした')
           }
           throw new Error(

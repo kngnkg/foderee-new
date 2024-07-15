@@ -1,6 +1,6 @@
 import { env } from '@/env.mjs'
 import { serverFetcher } from '@/lib/server-fetcher'
-import { ErrorType, isApiError } from '@/types/api/error'
+import { ApiErrorType, isApiError } from '@/types/api/error'
 import { isApiUser, toUser } from '@/types/api/user'
 import type { User } from '@/types/user'
 
@@ -16,7 +16,7 @@ export const getUser = async (username: string): Promise<User | null> => {
       }
 
       // ユーザーが存在しない場合はnullを返す
-      if (data.type === ErrorType.EntityNotFound) {
+      if (data.type === ApiErrorType.EntityNotFound) {
         return null
       }
 

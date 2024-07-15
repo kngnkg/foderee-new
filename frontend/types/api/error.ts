@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export enum ErrorType {
+export enum ApiErrorType {
   EntityNotFound = 'entity_not_found',
   EndpointNotFound = 'endpoint_not_found',
   Unauthorized = 'unauthorized',
@@ -9,7 +9,7 @@ export enum ErrorType {
 
 export const apiErrorSchema = z.object({
   message: z.string(),
-  type: z.nativeEnum(ErrorType),
+  type: z.nativeEnum(ApiErrorType),
 })
 
 export type ApiError = z.infer<typeof apiErrorSchema>

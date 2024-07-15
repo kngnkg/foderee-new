@@ -6,10 +6,10 @@ import { env } from '@/env.mjs'
 import { serverFetcher } from '@/lib/server-fetcher'
 import { toExpectedUser } from '@/lib/test-utils'
 import { getUser } from '@/service/users/get-user'
-import { ErrorType } from '@/types/api/error'
+import { ApiErrorType } from '@/types/api/error'
 import type { ApiUser } from '@/types/api/user'
 
-jest.mock('@/lib/utils', () => ({
+jest.mock('@/lib/server-fetcher', () => ({
   serverFetcher: jest.fn(),
 }))
 
@@ -55,7 +55,7 @@ describe('getUser', () => {
   it('ユーザーが存在しない場合はnullを返す', async () => {
     const mockEntityNotFoundErrorData = {
       message: 'Entity not found',
-      type: ErrorType.EntityNotFound,
+      type: ApiErrorType.EntityNotFound,
     }
     mockServerFetcher.mockResolvedValue(mockEntityNotFoundErrorData)
 
@@ -71,7 +71,7 @@ describe('getUser', () => {
   it('その他のエラーレスポンスの場合はエラータイプとエラーメッセージを含むエラーを返す', async () => {
     const mockOtherErrorData = {
       message: 'Other error',
-      type: ErrorType.Unauthorized,
+      type: ApiErrorType.Unauthorized,
     }
     mockServerFetcher.mockResolvedValue(mockOtherErrorData)
 
