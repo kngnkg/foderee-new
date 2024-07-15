@@ -44,6 +44,10 @@ export const albumSimplifiedSchema = albumSchema.pick({
   releaseDate: true,
 })
 
+export function isAlbumSimplified(obj: unknown): obj is AlbumSimplified {
+  return albumSimplifiedSchema.safeParse(obj).success
+}
+
 export const albumsWithPaginationSchema = paginationSchema.extend({
   albums: z.array(albumSimplifiedSchema),
 })

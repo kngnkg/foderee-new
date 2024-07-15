@@ -8,8 +8,7 @@ export const apiPaginationSchema = z.object({
 
 export type ApiPagination = z.infer<typeof apiPaginationSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isApiPagination(input: any): input is ApiPagination {
+export function isApiPagination(input: unknown): input is ApiPagination {
   return apiPaginationSchema.safeParse(input).success
 }
 
@@ -21,8 +20,7 @@ export const apiPaginationParamsSchema = apiPaginationSchema.pick({
 export type ApiPaginationParams = z.infer<typeof apiPaginationParamsSchema>
 
 export function isApiPaginationParams(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  input: any,
+  input: unknown,
 ): input is ApiPaginationParams {
   return apiPaginationParamsSchema.safeParse(input).success
 }
@@ -33,7 +31,6 @@ export const apiSearchParamsSchema = apiPaginationParamsSchema.extend({
 
 export type ApiSearchParams = z.infer<typeof apiSearchParamsSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isApiSearchParams(input: any): input is ApiSearchParams {
+export function isApiSearchParams(input: unknown): input is ApiSearchParams {
   return apiSearchParamsSchema.safeParse(input).success
 }

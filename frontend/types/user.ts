@@ -54,12 +54,12 @@ export const usersWithPaginationSchema = paginationSchema.extend({
 
 export type UsersWithPagination = z.infer<typeof usersWithPaginationSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isUser(obj: any): obj is User {
+export function isUser(obj: unknown): obj is User {
   return userSchema.safeParse(obj).success
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isUsersWithPagination(obj: any): obj is UsersWithPagination {
+export function isUsersWithPagination(
+  obj: unknown,
+): obj is UsersWithPagination {
   return usersWithPaginationSchema.safeParse(obj).success
 }

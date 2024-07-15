@@ -17,8 +17,7 @@ export const apiUserSchema = z.object({
 
 export type ApiUser = z.infer<typeof apiUserSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isApiUser(obj: any): obj is ApiUser {
+export function isApiUser(obj: unknown): obj is ApiUser {
   return apiUserSchema.safeParse(obj).success
 }
 
@@ -28,8 +27,7 @@ export const ApiUsersSchema = apiPaginationSchema.extend({
 
 export type ApiUsers = z.infer<typeof ApiUsersSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isApiUsers(obj: any): obj is ApiUsers {
+export function isApiUsers(obj: unknown): obj is ApiUsers {
   return ApiUsersSchema.safeParse(obj).success
 }
 

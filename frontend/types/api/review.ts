@@ -17,8 +17,7 @@ export const apiReviewSchema = z.object({
 
 export type ApiReview = z.infer<typeof apiReviewSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isApiReview(obj: any): obj is ApiReview {
+export function isApiReview(obj: unknown): obj is ApiReview {
   return apiReviewSchema.safeParse(obj).success
 }
 
