@@ -1,5 +1,4 @@
 import { isApiUser, type ApiUser } from '@/types/api/user'
-import { isUser, type User } from '@/types/user'
 
 export const generateApiUserForTest = (
   data: Partial<ApiUser> = {},
@@ -21,23 +20,4 @@ export const generateApiUserForTest = (
     throw new Error(`Invalid API user data: ${apiUser}`)
   }
   return apiUser
-}
-
-export const toUserForTest = (data: ApiUser): User => {
-  const user = {
-    username: data.username,
-    immutableId: data.immutable_id,
-    displayName: data.display_name,
-    avatarUrl: data.avatar_url || '',
-    bio: data.bio || '',
-    followersCount: data.followers_count,
-    followingCount: data.following_count,
-    createdAt: new Date(data.created_at),
-    updatedAt: new Date(data.updated_at),
-  }
-
-  if (!isUser(user)) {
-    throw new Error(`Invalid user data: ${user}`)
-  }
-  return user
 }

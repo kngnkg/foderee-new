@@ -4,7 +4,8 @@
 
 import { env } from '@/env.mjs'
 import { serverFetcher } from '@/lib/server-fetcher'
-import { generateApiUserForTest, toUserForTest } from '@/lib/testutil/users'
+import { generateApiUserForTest } from '@/lib/testutil/users'
+import { toUser } from '@/lib/transform/user'
 import { listFollowees } from '@/service/users/list-followees'
 import { ApiErrorType } from '@/types/api/error'
 import { EntityNotFoundError } from '@/types/error'
@@ -38,7 +39,7 @@ describe('listFollowees', () => {
     }
 
     const expected = {
-      users: mockFolloweesData.users.map((u) => toUserForTest(u)),
+      users: mockFolloweesData.users.map((u) => toUser(u)),
       offset: 0,
       limit: 2,
       total: 2,
