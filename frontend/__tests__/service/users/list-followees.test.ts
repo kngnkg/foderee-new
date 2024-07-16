@@ -4,7 +4,7 @@
 
 import { env } from '@/env.mjs'
 import { serverFetcher } from '@/lib/server-fetcher'
-import { generateApiUserForTest, toExpectedUser } from '@/lib/test-utils'
+import { generateApiUserForTest, toExpectedUser } from '@/lib/testutil/users'
 import { listFollowees } from '@/service/users/list-followees'
 import { ApiErrorType } from '@/types/api/error'
 import { EntityNotFoundError } from '@/types/error'
