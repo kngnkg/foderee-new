@@ -4,10 +4,9 @@
 
 import { env } from '@/env.mjs'
 import { serverFetcher } from '@/lib/server-fetcher'
-import { toExpectedUser } from '@/lib/test-utils'
+import { generateApiUserForTest, toExpectedUser } from '@/lib/test-utils'
 import { getUser } from '@/service/users/get-user'
 import { ApiErrorType } from '@/types/api/error'
-import type { ApiUser } from '@/types/api/user'
 import { EntityNotFoundError } from '@/types/error'
 
 jest.mock('@/lib/server-fetcher', () => ({
@@ -28,26 +27,17 @@ describe('getUser', () => {
   })
 
   it('ユーザーが存在する場合はユーザーデータを返す', async () => {
-    const mockUserData: ApiUser = {
-      username: 'testuser',
-      immutable_id: 'e5822d84-9119-4caa-ad96-a4c6ebdaa8a7',
-      display_name: 'Test User',
-      avatar_url: 'http://example.com/avatar.jpg',
-      bio: 'Hello, World!',
-      followers_count: 10,
-      following_count: 20,
-      created_at: '2021-01-01T00:00:00Z',
-      updated_at: '2021-01-01T00:00:00Z',
-    }
+    const validUsername = '@validUsername'
+    const mockUserData = generateApiUserForTest({ username: validUsername })
 
     const expected = toExpectedUser(mockUserData)
 
     mockServerFetcher.mockResolvedValue(mockUserData)
 
-    const user = await getUser('validUsername')
+    const user = await getUser(validUsername)
 
     expect(mockServerFetcher).toHaveBeenCalledWith(
-      `${env.API_URL}/users/validUsername`,
+      `${env.API_URL}/users/${validUsername}`,
       { cache: 'no-store' },
     )
     expect(user).toEqual(expected)
@@ -60,12 +50,12 @@ describe('getUser', () => {
     }
     mockServerFetcher.mockResolvedValue(mockEntityNotFoundErrorData)
 
-    await expect(getUser('invalidUsername')).rejects.toThrow(
-      EntityNotFoundError,
-    )
+    const invalidUsername = '@invalidUsername'
+
+    await expect(getUser(invalidUsername)).rejects.toThrow(EntityNotFoundError)
 
     expect(mockServerFetcher).toHaveBeenCalledWith(
-      `${env.API_URL}/users/invalidUsername`,
+      `${env.API_URL}/users/${invalidUsername}`,
       { cache: 'no-store' },
     )
   })

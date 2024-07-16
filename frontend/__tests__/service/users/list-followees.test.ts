@@ -4,7 +4,7 @@
 
 import { env } from '@/env.mjs'
 import { serverFetcher } from '@/lib/server-fetcher'
-import { toExpectedUser } from '@/lib/test-utils'
+import { generateApiUserForTest, toExpectedUser } from '@/lib/test-utils'
 import { listFollowees } from '@/service/users/list-followees'
 import { ApiErrorType } from '@/types/api/error'
 import { EntityNotFoundError } from '@/types/error'
@@ -29,28 +29,8 @@ describe('listFollowees', () => {
   it('フォローユーザーが存在する場合はフォローユーザーリストを返す', async () => {
     const mockFolloweesData = {
       users: [
-        {
-          username: 'testuser1',
-          immutable_id: 'e5822d84-9119-4caa-ad96-a4c6ebdaa8a7',
-          display_name: 'Test User1',
-          avatar_url: 'http://example.com/avatar1.jpg',
-          bio: 'Hello, World!1',
-          followers_count: 10,
-          following_count: 20,
-          created_at: '2021-01-01T00:00:00Z',
-          updated_at: '2021-01-01T00:00:00Z',
-        },
-        {
-          username: 'testuser2',
-          immutable_id: 'e5822d84-9119-4caa-ad96-a4c6ebdaa8a8',
-          display_name: 'Test User2',
-          avatar_url: 'http://example.com/avatar2.jpg',
-          bio: 'Hello, World!2',
-          followers_count: 11,
-          following_count: 21,
-          created_at: '2021-01-01T00:00:00Z',
-          updated_at: '2021-01-01T00:00:00Z',
-        },
+        generateApiUserForTest({ username: '@testuser1' }),
+        generateApiUserForTest({ username: '@testuser2' }),
       ],
       offset: 0,
       limit: 2,
@@ -66,13 +46,15 @@ describe('listFollowees', () => {
 
     mockServerFetcher.mockResolvedValue(mockFolloweesData)
 
-    const followees = await listFollowees('validUsername', {
+    const validUsername = '@validUsername'
+
+    const followees = await listFollowees(validUsername, {
       offset: 0,
       limit: 2,
     })
 
     expect(mockServerFetcher).toHaveBeenCalledWith(
-      `${env.API_URL}/users/validUsername/followees?limit=2`,
+      `${env.API_URL}/users/${validUsername}/followees?limit=2`,
       { cache: 'no-store' },
     )
     expect(followees).toEqual(expected)
@@ -88,13 +70,15 @@ describe('listFollowees', () => {
 
     mockServerFetcher.mockResolvedValue(mockFolloweesData)
 
-    const followees = await listFollowees('validUsername', {
+    const validUsername = '@validUsername'
+
+    const followees = await listFollowees(validUsername, {
       offset: 0,
       limit: 2,
     })
 
     expect(mockServerFetcher).toHaveBeenCalledWith(
-      `${env.API_URL}/users/validUsername/followees?limit=2`,
+      `${env.API_URL}/users/${validUsername}/followees?limit=2`,
       { cache: 'no-store' },
     )
 
@@ -116,7 +100,7 @@ describe('listFollowees', () => {
     mockServerFetcher.mockResolvedValue(mockEntityNotFoundErrorData)
 
     await expect(
-      listFollowees('invalidUsername', {
+      listFollowees('@invalidUsername', {
         offset: 0,
         limit: 2,
       }),
