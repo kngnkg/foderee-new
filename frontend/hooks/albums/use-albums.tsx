@@ -2,8 +2,8 @@ import type { AlbumsWithPagination } from '@/types/album'
 import useSWRInfinite from 'swr/infinite'
 
 import { env } from '@/env.mjs'
-import { transformAlbumSimplified } from '@/hooks/transform'
 import { clientFetcher } from '@/lib/client-fetcher'
+import { transformAlbumSimplified } from '@/lib/transform/bff-album'
 
 interface UseAlbumsProps {
   query: string

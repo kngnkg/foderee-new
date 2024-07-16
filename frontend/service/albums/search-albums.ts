@@ -1,8 +1,5 @@
-import {
-  setSpotifyClientAccessToken,
-  spotifyClient,
-  toAlbumSimplified,
-} from '@/lib/spotify'
+import { setSpotifyClientAccessToken, spotifyClient } from '@/lib/spotify'
+import { toAlbumSimplified } from '@/lib/transform/album'
 import type { AlbumsWithPagination } from '@/types/album'
 import type { SearchParams } from '@/types/pagination'
 

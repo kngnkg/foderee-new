@@ -1,7 +1,8 @@
 import { env } from '@/env.mjs'
 import { serverFetcher } from '@/lib/server-fetcher'
+import { toUser } from '@/lib/transform/user'
 import { ApiErrorType, isApiError } from '@/types/api/error'
-import { isApiUser, toUser } from '@/types/api/user'
+import { isApiUser } from '@/types/api/user'
 import { EntityNotFoundError } from '@/types/error'
 import type { User } from '@/types/user'
 

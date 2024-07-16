@@ -1,7 +1,7 @@
 import * as z from 'zod'
 
 import { apiPaginationSchema } from '@/types/api/pagination'
-import { isUser, userNameSchema, type User } from '@/types/user'
+import { userNameSchema } from '@/types/user'
 
 export const apiUserSchema = z.object({
   username: userNameSchema,
@@ -29,23 +29,4 @@ export type ApiUsers = z.infer<typeof ApiUsersSchema>
 
 export function isApiUsers(obj: unknown): obj is ApiUsers {
   return ApiUsersSchema.safeParse(obj).success
-}
-
-export function toUser(apiUser: ApiUser): User {
-  const user = {
-    username: apiUser.username,
-    immutableId: apiUser.immutable_id,
-    displayName: apiUser.display_name,
-    avatarUrl: apiUser.avatar_url,
-    bio: apiUser.bio,
-    followersCount: apiUser.followers_count,
-    followingCount: apiUser.following_count,
-    createdAt: new Date(apiUser.created_at),
-    updatedAt: new Date(apiUser.updated_at),
-  }
-
-  if (!isUser(user)) {
-    throw new Error('Invalid user data')
-  }
-  return user
 }
