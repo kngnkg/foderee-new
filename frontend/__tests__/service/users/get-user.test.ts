@@ -4,7 +4,7 @@
 
 import { env } from '@/env.mjs'
 import { serverFetcher } from '@/lib/server-fetcher'
-import { generateApiUserForTest, toExpectedUser } from '@/lib/testutil/users'
+import { generateApiUserForTest, toUserForTest } from '@/lib/testutil/users'
 import { getUser } from '@/service/users/get-user'
 import { ApiErrorType } from '@/types/api/error'
 import { EntityNotFoundError } from '@/types/error'
@@ -30,7 +30,7 @@ describe('getUser', () => {
     const validUsername = '@validUsername'
     const mockUserData = generateApiUserForTest({ username: validUsername })
 
-    const expected = toExpectedUser(mockUserData)
+    const expected = toUserForTest(mockUserData)
 
     mockServerFetcher.mockResolvedValue(mockUserData)
 

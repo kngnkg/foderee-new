@@ -16,7 +16,7 @@ export const generateApiUserForTest = (
   ...data,
 })
 
-export const toExpectedUser = (data: ApiUser): User => ({
+export const toUserForTest = (data: ApiUser): User => ({
   username: data.username,
   immutableId: data.immutable_id,
   displayName: data.display_name,
