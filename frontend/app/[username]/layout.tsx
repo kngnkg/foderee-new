@@ -56,6 +56,6 @@ export default async function UserLayout({
     }
 
     console.error(e)
-    throw e
+    return notFound()
   }
 }
