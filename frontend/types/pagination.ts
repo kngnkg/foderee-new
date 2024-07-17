@@ -1,9 +1,9 @@
 import { z } from 'zod'
 
 export const paginationSchema = z.object({
-  offset: z.number(),
-  limit: z.number(),
-  total: z.number(),
+  offset: z.number().int().min(0).default(0),
+  limit: z.number().int().min(0).max(100).default(20),
+  total: z.number().int().min(0),
 })
 
 export type Pagination = z.infer<typeof paginationSchema>
@@ -12,10 +12,7 @@ export function isPagination(input: unknown): input is Pagination {
   return paginationSchema.safeParse(input).success
 }
 
-export const paginationParamsSchema = z.object({
-  offset: z.number().optional(),
-  limit: z.number().optional(),
-})
+export const paginationParamsSchema = paginationSchema.omit({ total: true })
 
 export type PaginationParams = z.infer<typeof paginationParamsSchema>
 
