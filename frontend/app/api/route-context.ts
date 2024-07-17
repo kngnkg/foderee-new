@@ -1,9 +1,9 @@
-import { userNameSchema } from '@/types/user'
+import { usernameSchema } from '@/types/user'
 import { z } from 'zod'
 
 export const userRouteContextSchema = z.object({
   params: z.object({
-    username: userNameSchema,
+    username: usernameSchema,
   }),
 })
 
