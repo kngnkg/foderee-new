@@ -2,7 +2,8 @@ import type { AlbumsWithPagination } from '@/types/album'
 import useSWRInfinite from 'swr/infinite'
 
 import { env } from '@/env.mjs'
-import { clientFetcher } from '@/lib/utils'
+import { clientFetcher } from '@/lib/client-fetcher'
+import { transformAlbumSimplified } from '@/lib/transform/bff-album'
 
 interface UseAlbumsProps {
   query: string
@@ -21,23 +22,15 @@ const fetcher = async (
   resource: RequestInfo,
   init?: RequestInit,
 ): Promise<AlbumsWithPagination> => {
-  const body = await clientFetcher(resource, init)
+  const data = await clientFetcher(resource, init)
   // TODO: エラーハンドリング
 
   return {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    albums: body.albums.map((album: any) => {
-      return {
-        albumId: album.albumId,
-        name: album.name,
-        artists: album.artists,
-        coverUrl: album.coverUrl,
-        releaseDate: new Date(album.releaseDate),
-      }
-    }),
-    offset: body.offset,
-    limit: body.limit,
-    total: body.total,
+    albums: data.albums.map((album: any) => transformAlbumSimplified(album)),
+    offset: data.offset,
+    limit: data.limit,
+    total: data.total,
   }
 }
 

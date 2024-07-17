@@ -1,27 +1,24 @@
 import { z } from 'zod'
 
 export const paginationSchema = z.object({
-  offset: z.number(),
-  limit: z.number(),
-  total: z.number(),
+  offset: z.number().int().min(0).default(0),
+  limit: z.number().int().min(0).max(100).default(20),
+  total: z.number().int().min(0),
 })
 
 export type Pagination = z.infer<typeof paginationSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isPagination(input: any): input is Pagination {
+export function isPagination(input: unknown): input is Pagination {
   return paginationSchema.safeParse(input).success
 }
 
-export const paginationParamsSchema = z.object({
-  offset: z.number().optional(),
-  limit: z.number().optional(),
-})
+export const paginationParamsSchema = paginationSchema
+  .omit({ total: true })
+  .partial()
 
 export type PaginationParams = z.infer<typeof paginationParamsSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isPaginationParams(input: any): input is PaginationParams {
+export function isPaginationParams(input: unknown): input is PaginationParams {
   return paginationParamsSchema.safeParse(input).success
 }
 
@@ -31,7 +28,6 @@ export const searchParamsSchema = paginationParamsSchema.extend({
 
 export type SearchParams = z.infer<typeof searchParamsSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isSearchParams(input: any): input is SearchParams {
+export function isSearchParams(input: unknown): input is SearchParams {
   return searchParamsSchema.safeParse(input).success
 }

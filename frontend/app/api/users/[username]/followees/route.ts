@@ -1,11 +1,12 @@
-import type { NextRequest } from 'next/server'
-import { NextResponse } from 'next/server'
-
-import { errInternal, errNotFound } from '@/app/api/response'
+import { errInternal, errResponse } from '@/app/api/response'
 import type { UserRouteContext } from '@/app/api/route-context'
 import { userRouteContextSchema } from '@/app/api/route-context'
 import { getPaginationParamsFromRequest } from '@/app/api/utils'
 import { listFollowees } from '@/service/users/list-followees'
+import { BffErrorType } from '@/types/bff-error'
+import { EntityNotFoundError } from '@/types/error'
+import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest, context: UserRouteContext) {
   try {
@@ -14,13 +15,13 @@ export async function GET(request: NextRequest, context: UserRouteContext) {
     const paginationParams = getPaginationParamsFromRequest(request)
 
     const usersWP = await listFollowees(params.username, paginationParams)
-    if (!usersWP) {
-      return errNotFound('user not found')
-    }
 
     return NextResponse.json(usersWP)
   } catch (e) {
-    console.error(e)
-    return errInternal('internal error')
+    if (e instanceof EntityNotFoundError) {
+      return errResponse('user not found', BffErrorType.EntityNotFound)
+    }
+
+    return errInternal(e)
   }
 }

@@ -23,10 +23,8 @@ export const trackSchema = z.object({
   trackNumber: z.number(),
 })
 
-export const albumIdSchema = z.string()
-
 export const albumSchema = z.object({
-  albumId: albumIdSchema,
+  albumId: z.string(),
   spotifyUri: z.string(),
   spotifyUrl: z.string().url(),
   name: z.string(),
@@ -36,6 +34,8 @@ export const albumSchema = z.object({
   releaseDate: z.date(),
 })
 
+export const albumIdSchema = albumSchema.shape.albumId
+
 export const albumSimplifiedSchema = albumSchema.pick({
   albumId: true,
   name: true,
@@ -43,6 +43,10 @@ export const albumSimplifiedSchema = albumSchema.pick({
   coverUrl: true,
   releaseDate: true,
 })
+
+export function isAlbumSimplified(obj: unknown): obj is AlbumSimplified {
+  return albumSimplifiedSchema.safeParse(obj).success
+}
 
 export const albumsWithPaginationSchema = paginationSchema.extend({
   albums: z.array(albumSimplifiedSchema),

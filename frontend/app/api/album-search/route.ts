@@ -1,16 +1,17 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
+import { errInternal, errResponse } from '@/app/api/response'
 import { searchAlbums } from '@/service/albums/search-albums'
+import { BffErrorType } from '@/types/bff-error'
 import { isSearchParams } from '@/types/pagination'
-import { errBadRequest, errInternal, errNotFound } from '../response'
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
     const q = searchParams.get('q')
     if (!q) {
-      return errBadRequest('q is required')
+      return errResponse('q is required', BffErrorType.BadRequest)
     }
     const offsetStr = searchParams.get('offset')
     const limitStr = searchParams.get('limit')
@@ -21,17 +22,16 @@ export async function GET(request: NextRequest) {
       limit: limitStr ? parseInt(limitStr) : undefined,
     }
     if (!isSearchParams(params)) {
-      return errBadRequest('invalid query')
+      return errResponse('invalid query', BffErrorType.BadRequest)
     }
 
     const albumsWP = await searchAlbums(params)
     if (!albumsWP) {
-      return errNotFound('album not found')
+      return errResponse('album not found', BffErrorType.EntityNotFound)
     }
 
     return NextResponse.json(albumsWP)
   } catch (e) {
-    console.error(e)
-    return errInternal('internal error')
+    return errInternal(e)
   }
 }

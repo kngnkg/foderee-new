@@ -2,23 +2,6 @@ import { albumSchema } from '@/types/album'
 import { userSchema } from '@/types/user'
 import * as z from 'zod'
 
-export enum PublishedStatus {
-  Published = 'published',
-  Unpublished = 'unpublished',
-  Draft = 'draft',
-}
-
-export const publishedStatusSchema = z.nativeEnum(PublishedStatus)
-
-export const reviewTitleSchema = z
-  .string()
-  .min(1, {
-    message: 'レビュータイトルは必須です',
-  })
-  .max(100, {
-    message: 'レビュータイトルは100文字以下で入力してください',
-  })
-
 export const headerSchema = z.object({
   text: z.string(),
   level: z.number(),
@@ -26,8 +9,7 @@ export const headerSchema = z.object({
 
 export type ContentHeader = z.infer<typeof headerSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isContentHeader(obj: any): obj is ContentHeader {
+export function isContentHeader(obj: unknown): obj is ContentHeader {
   return headerSchema.safeParse(obj).success
 }
 
@@ -37,8 +19,7 @@ export const paragraphSchema = z.object({
 
 export type ContentParagraph = z.infer<typeof paragraphSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isContentParagraph(obj: any): obj is ContentParagraph {
+export function isContentParagraph(obj: unknown): obj is ContentParagraph {
   return paragraphSchema.safeParse(obj).success
 }
 
@@ -49,8 +30,7 @@ export const listSchema = z.object({
 
 export type ContentList = z.infer<typeof listSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isContentList(obj: any): obj is ContentList {
+export function isContentList(obj: unknown): obj is ContentList {
   return listSchema.safeParse(obj).success
 }
 
@@ -62,41 +42,57 @@ export const quoteSchema = z.object({
 
 export type ContentQuote = z.infer<typeof quoteSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isContentQuote(obj: any): obj is ContentQuote {
+export function isContentQuote(obj: unknown): obj is ContentQuote {
   return quoteSchema.safeParse(obj).success
 }
 
-export const contentBlockSchema = z.object({
+export const contentBlocksSchema = z.object({
   id: z.string(),
   type: z.string(),
   data: z.union([headerSchema, paragraphSchema, listSchema, quoteSchema]),
 })
 
-export type ContentBlock = z.infer<typeof contentBlockSchema>
+export type ContentBlock = z.infer<typeof contentBlocksSchema>
 
 export const reviewContentSchema = z.object({
   time: z.number(),
-  blocks: z.array(contentBlockSchema),
+  blocks: z.array(contentBlocksSchema),
 })
 
 export type Content = z.infer<typeof reviewContentSchema>
 
+export enum PublishedStatus {
+  Published = 'published',
+  Unpublished = 'unpublished',
+  Draft = 'draft',
+}
+
 export const reviewSchema = z.object({
   reviewId: z.string().uuid(),
-  publishedStatus: publishedStatusSchema,
+  publishedStatus: z.nativeEnum(PublishedStatus),
   album: albumSchema,
   user: userSchema,
-  title: reviewTitleSchema,
+  title: z
+    .string()
+    .min(1, {
+      message: 'レビュータイトルは必須です',
+    })
+    .max(100, {
+      message: 'レビュータイトルは100文字以下で入力してください',
+    }),
   content: reviewContentSchema,
-  likesCount: z.number(),
+  likesCount: z.number().int().min(0),
   createdAt: z.date(),
   updatedAt: z.date(),
 })
 
+export const reviewIdSchema = reviewSchema.shape.reviewId
+export const publishedStatusSchema = reviewSchema.shape.publishedStatus
+export const reviewTitleSchema = reviewSchema.shape.title
+export const likesCountSchema = reviewSchema.shape.likesCount
+
 export type Review = z.infer<typeof reviewSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isReview(obj: any): obj is Review {
+export function isReview(obj: unknown): obj is Review {
   return reviewSchema.safeParse(obj).success
 }

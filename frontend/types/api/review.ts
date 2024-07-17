@@ -1,45 +1,28 @@
-import { toAlbum } from '@/lib/spotify'
-import { apiUserSchema, toUser } from '@/types/api/user'
-import { isReview, type Review } from '@/types/review'
+import { albumIdSchema } from '@/types/album'
+import { apiUserSchema } from '@/types/api/user'
+import {
+  likesCountSchema,
+  publishedStatusSchema,
+  reviewContentSchema,
+  reviewIdSchema,
+  reviewTitleSchema,
+} from '@/types/review'
 import { z } from 'zod'
 
 export const apiReviewSchema = z.object({
-  review_id: z.string().uuid(),
-  published_status: z.string(),
-  album_id: z.string(),
+  review_id: reviewIdSchema,
+  published_status: publishedStatusSchema,
+  album_id: albumIdSchema,
   user: apiUserSchema,
-  title: z.string(),
-  content: z.any(),
-  likes_count: z.number(),
-  created_at: z.date(),
-  updated_at: z.date(),
+  title: reviewTitleSchema,
+  content: reviewContentSchema,
+  likes_count: likesCountSchema,
+  created_at: z.string(),
+  updated_at: z.string(),
 })
 
 export type ApiReview = z.infer<typeof apiReviewSchema>
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isApiReview(obj: any): obj is ApiReview {
+export function isApiReview(obj: unknown): obj is ApiReview {
   return apiReviewSchema.safeParse(obj).success
-}
-
-export function toReview(
-  apiReview: ApiReview,
-  apiAlbum: SpotifyApi.SingleAlbumResponse,
-): Review {
-  const review = {
-    reviewId: apiReview.review_id,
-    publishedStatus: apiReview.published_status,
-    album: toAlbum(apiAlbum),
-    user: toUser(apiReview.user),
-    title: apiReview.title,
-    content: apiReview.content,
-    likesCount: apiReview.likes_count,
-    createdAt: new Date(apiReview.created_at),
-    updatedAt: new Date(apiReview.updated_at),
-  }
-
-  if (!isReview(review)) {
-    throw new Error(`Invalid review data: ${review}`)
-  }
-  return review
 }
