@@ -1,6 +1,7 @@
 import { albumIdSchema } from '@/types/album'
 import { apiUserSchema } from '@/types/api/user'
 import {
+  likesCountSchema,
   publishedStatusSchema,
   reviewContentSchema,
   reviewIdSchema,
@@ -15,7 +16,7 @@ export const apiReviewSchema = z.object({
   user: apiUserSchema,
   title: reviewTitleSchema,
   content: reviewContentSchema,
-  likes_count: z.number(),
+  likes_count: likesCountSchema,
   created_at: z.string(),
   updated_at: z.string(),
 })

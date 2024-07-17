@@ -5,18 +5,20 @@ import {
   avatarUrlSchema,
   bioSchema,
   displayNameSchema,
+  followersCountSchema,
+  followingCountSchema,
   immutableIdSchema,
-  userNameSchema,
+  usernameSchema,
 } from '@/types/user'
 
 export const apiUserSchema = z.object({
-  username: userNameSchema,
+  username: usernameSchema,
   immutable_id: immutableIdSchema,
   display_name: displayNameSchema,
   avatar_url: avatarUrlSchema,
   bio: bioSchema,
-  followers_count: z.number(),
-  following_count: z.number(),
+  followers_count: followersCountSchema,
+  following_count: followingCountSchema,
   created_at: z.string(),
   updated_at: z.string(),
 })

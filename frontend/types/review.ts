@@ -2,25 +2,6 @@ import { albumSchema } from '@/types/album'
 import { userSchema } from '@/types/user'
 import * as z from 'zod'
 
-export const reviewIdSchema = z.string().uuid()
-
-export enum PublishedStatus {
-  Published = 'published',
-  Unpublished = 'unpublished',
-  Draft = 'draft',
-}
-
-export const publishedStatusSchema = z.nativeEnum(PublishedStatus)
-
-export const reviewTitleSchema = z
-  .string()
-  .min(1, {
-    message: 'レビュータイトルは必須です',
-  })
-  .max(100, {
-    message: 'レビュータイトルは100文字以下で入力してください',
-  })
-
 export const headerSchema = z.object({
   text: z.string(),
   level: z.number(),
@@ -65,32 +46,48 @@ export function isContentQuote(obj: unknown): obj is ContentQuote {
   return quoteSchema.safeParse(obj).success
 }
 
-export const contentBlockSchema = z.object({
-  id: z.string(),
-  type: z.string(),
-  data: z.union([headerSchema, paragraphSchema, listSchema, quoteSchema]),
-})
-
-export type ContentBlock = z.infer<typeof contentBlockSchema>
-
 export const reviewContentSchema = z.object({
   time: z.number(),
-  blocks: z.array(contentBlockSchema),
+  blocks: z.array(
+    z.object({
+      id: z.string(),
+      type: z.string(),
+      data: z.union([headerSchema, paragraphSchema, listSchema, quoteSchema]),
+    }),
+  ),
 })
 
 export type Content = z.infer<typeof reviewContentSchema>
 
+export enum PublishedStatus {
+  Published = 'published',
+  Unpublished = 'unpublished',
+  Draft = 'draft',
+}
+
 export const reviewSchema = z.object({
-  reviewId: reviewIdSchema,
-  publishedStatus: publishedStatusSchema,
+  reviewId: z.string().uuid(),
+  publishedStatus: z.nativeEnum(PublishedStatus),
   album: albumSchema,
   user: userSchema,
-  title: reviewTitleSchema,
+  title: z
+    .string()
+    .min(1, {
+      message: 'レビュータイトルは必須です',
+    })
+    .max(100, {
+      message: 'レビュータイトルは100文字以下で入力してください',
+    }),
   content: reviewContentSchema,
-  likesCount: z.number(),
+  likesCount: z.number().int().min(0),
   createdAt: z.date(),
   updatedAt: z.date(),
 })
+
+export const reviewIdSchema = reviewSchema.shape.reviewId
+export const publishedStatusSchema = reviewSchema.shape.publishedStatus
+export const reviewTitleSchema = reviewSchema.shape.title
+export const likesCountSchema = reviewSchema.shape.likesCount
 
 export type Review = z.infer<typeof reviewSchema>
 
