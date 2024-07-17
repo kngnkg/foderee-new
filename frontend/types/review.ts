@@ -2,6 +2,8 @@ import { albumSchema } from '@/types/album'
 import { userSchema } from '@/types/user'
 import * as z from 'zod'
 
+export const reviewIdSchema = z.string().uuid()
+
 export enum PublishedStatus {
   Published = 'published',
   Unpublished = 'unpublished',
@@ -79,7 +81,7 @@ export const reviewContentSchema = z.object({
 export type Content = z.infer<typeof reviewContentSchema>
 
 export const reviewSchema = z.object({
-  reviewId: z.string().uuid(),
+  reviewId: reviewIdSchema,
   publishedStatus: publishedStatusSchema,
   album: albumSchema,
   user: userSchema,
