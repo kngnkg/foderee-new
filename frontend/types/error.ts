@@ -11,3 +11,10 @@ export class EntityNotFoundError extends AppError {
     this.name = 'EntityNotFoundError'
   }
 }
+
+export class SpotifyResourceNotFoundError extends AppError {
+  constructor(message: string) {
+    super(message)
+    this.name = 'SpotifyResourceNotFoundError'
+  }
+}

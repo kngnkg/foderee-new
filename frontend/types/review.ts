@@ -95,3 +95,11 @@ export type Review = z.infer<typeof reviewSchema>
 export function isReview(obj: unknown): obj is Review {
   return reviewSchema.safeParse(obj).success
 }
+
+export function validateReview(obj: unknown): obj is Review {
+  const result = reviewSchema.safeParse(obj)
+  if (!result.success) {
+    throw result.error
+  }
+  return true
+}
