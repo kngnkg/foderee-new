@@ -46,15 +46,17 @@ export function isContentQuote(obj: unknown): obj is ContentQuote {
   return quoteSchema.safeParse(obj).success
 }
 
+export const contentBlocksSchema = z.object({
+  id: z.string(),
+  type: z.string(),
+  data: z.union([headerSchema, paragraphSchema, listSchema, quoteSchema]),
+})
+
+export type ContentBlock = z.infer<typeof contentBlocksSchema>
+
 export const reviewContentSchema = z.object({
   time: z.number(),
-  blocks: z.array(
-    z.object({
-      id: z.string(),
-      type: z.string(),
-      data: z.union([headerSchema, paragraphSchema, listSchema, quoteSchema]),
-    }),
-  ),
+  blocks: z.array(contentBlocksSchema),
 })
 
 export type Content = z.infer<typeof reviewContentSchema>
