@@ -12,7 +12,9 @@ export function isPagination(input: unknown): input is Pagination {
   return paginationSchema.safeParse(input).success
 }
 
-export const paginationParamsSchema = paginationSchema.omit({ total: true })
+export const paginationParamsSchema = paginationSchema
+  .omit({ total: true })
+  .partial()
 
 export type PaginationParams = z.infer<typeof paginationParamsSchema>
 
