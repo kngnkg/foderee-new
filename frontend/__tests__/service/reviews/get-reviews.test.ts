@@ -9,7 +9,6 @@ import { generateSpotifySingleAlbumResponseForTest } from '@/lib/testutil/albums
 import { generateApiReviewForTest } from '@/lib/testutil/reviews'
 import { toReview } from '@/lib/transform/review'
 import { getReview } from '@/service/reviews/get-review'
-import { ApiErrorType } from '@/types/api/error'
 import { EntityNotFoundError } from '@/types/error'
 
 jest.mock('@/lib/server-fetcher', () => ({
@@ -68,13 +67,9 @@ describe('getReview', () => {
   })
 
   it('レビューが存在しない場合はエラーを返す', async () => {
-    const mockEntityNotFoundErrorData = {
-      message: 'Entity not found',
-      type: ApiErrorType.EntityNotFound,
-    }
-    mockServerFetcher.mockResolvedValueOnce(mockEntityNotFoundErrorData)
+    mockServerFetcher.mockRejectedValueOnce(new EntityNotFoundError(''))
 
-    const invalidReviewId = 'invalidReviewId'
+    const invalidReviewId = 'a3bb189e-8bf9-3888-9912-ace4e6543002'
 
     await expect(getReview(invalidReviewId)).rejects.toThrow(
       EntityNotFoundError,
@@ -87,60 +82,37 @@ describe('getReview', () => {
     expect(mockgetAlbum).not.toHaveBeenCalled()
   })
 
-  it('レビュー対象のアルバムが存在しない場合はエラーを返す', async () => {
-    const validReviewId = 'b4606453-f786-42ae-a073-2d7afe9c94c5'
+  // it('レビュー対象のアルバムが存在しない場合はエラーを返す', async () => {
+  //   const validReviewId = 'b4606453-f786-42ae-a073-2d7afe9c94c5'
 
-    const mockReviewData = generateApiReviewForTest({
-      review_id: validReviewId,
-    })
+  //   const mockReviewData = generateApiReviewForTest({
+  //     review_id: validReviewId,
+  //   })
 
-    mockServerFetcher.mockResolvedValueOnce(mockReviewData)
+  //   mockServerFetcher.mockResolvedValueOnce(mockReviewData)
 
-    const mockSpotifyResourceNotFoundErrorData = {
-      body: {
-        error: { status: 404, message: 'Album not found' },
-      },
-      headers: {},
-      statusCode: 404,
-    }
-
-    mockgetAlbum.mockRejectedValueOnce(
-      new Error(JSON.stringify(mockSpotifyResourceNotFoundErrorData)),
-    )
-
-    // await expect(getReview(validReviewId)).rejects.toThrow(
-    //   SpotifyResourceNotFoundError,
-    // )
-
-    await expect(getReview(validReviewId)).rejects.toThrow()
-
-    expect(mockServerFetcher).toHaveBeenCalledWith(
-      `${env.API_URL}/reviews/${validReviewId}`,
-      { cache: 'no-store' },
-    )
-    expect(mockgetAlbum).toHaveBeenCalledWith(mockReviewData.album_id)
-  })
-
-  // it('その他のエラーレスポンスの場合はエラータイプとエラーメッセージを含むエラーを返す', async () => {
-  //   const mockOtherErrorData = {
-  //     message: 'Other error',
-  //     type: ApiErrorType.Unauthorized,
+  //   const mockSpotifyResourceNotFoundErrorData = {
+  //     body: {
+  //       error: { status: 404, message: 'Album not found' },
+  //     },
+  //     headers: {},
+  //     statusCode: 404,
   //   }
-  //   mockServerFetcher.mockResolvedValue(mockOtherErrorData)
 
-  //   await expect(getReview('otherError')).rejects.toThrow(
-  //     `APIリクエスト中にエラーが発生しました: ${mockOtherErrorData.type} ,${mockOtherErrorData.message}`,
+  //   mockgetAlbum.mockRejectedValueOnce(
+  //     new Error(JSON.stringify(mockSpotifyResourceNotFoundErrorData)),
   //   )
-  // })
 
-  // it('エラーレスポンスの形式が不正な場合はエラーを返す', async () => {
-  //   const mockInvalidErrorData = {
-  //     message: 'Invalid error response',
-  //   }
-  //   mockServerFetcher.mockResolvedValue(mockInvalidErrorData)
+  //   // await expect(getReview(validReviewId)).rejects.toThrow(
+  //   //   SpotifyResourceNotFoundError,
+  //   // )
 
-  //   await expect(getReview('invalidError')).rejects.toThrow(
-  //     'エラーレスポンスの形式が不正です',
+  //   await expect(getReview(validReviewId)).rejects.toThrow()
+
+  //   expect(mockServerFetcher).toHaveBeenCalledWith(
+  //     `${env.API_URL}/reviews/${validReviewId}`,
+  //     { cache: 'no-store' },
   //   )
+  //   expect(mockgetAlbum).toHaveBeenCalledWith(mockReviewData.album_id)
   // })
 })

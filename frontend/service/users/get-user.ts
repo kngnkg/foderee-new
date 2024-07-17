@@ -1,10 +1,10 @@
 import { env } from '@/env.mjs'
 import { serverFetcher } from '@/lib/server-fetcher'
 import { toUser } from '@/lib/transform/user'
-import { ApiErrorType, isApiError } from '@/types/api/error'
-import { isApiUser } from '@/types/api/user'
-import { EntityNotFoundError } from '@/types/error'
+import { apiUserSchema } from '@/types/api/user'
+import { EntityNotFoundError, InvalidDataReceivedError } from '@/types/error'
 import type { User } from '@/types/user'
+import { ZodError } from 'zod'
 
 export const getUser = async (username: string): Promise<User> => {
   try {
@@ -12,22 +12,22 @@ export const getUser = async (username: string): Promise<User> => {
       cache: 'no-store',
     })
 
-    if (!isApiUser(data)) {
-      if (!isApiError(data)) {
-        throw new Error('エラーレスポンスの形式が不正です')
-      }
+    const apiUser = apiUserSchema.parse(data)
 
-      if (data.type === ApiErrorType.EntityNotFound) {
-        throw new EntityNotFoundError(`ユーザー${username}が存在しません`)
-      }
-
-      throw new Error(
-        `APIリクエスト中にエラーが発生しました: ${data.type} ,${data.message}`,
+    return toUser(apiUser)
+  } catch (e) {
+    if (e instanceof EntityNotFoundError) {
+      throw new EntityNotFoundError(
+        `ユーザー${username}が存在しません: ${e.message}`,
       )
     }
 
-    return toUser(data)
-  } catch (e) {
+    if (e instanceof ZodError) {
+      throw new InvalidDataReceivedError(
+        `APIからのデータが不正です: ${e.message}`,
+      )
+    }
+
     throw e
   }
 }

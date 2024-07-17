@@ -7,8 +7,7 @@ import { serverFetcher } from '@/lib/server-fetcher'
 import { generateApiUserForTest } from '@/lib/testutil/users'
 import { toUser } from '@/lib/transform/user'
 import { getUser } from '@/service/users/get-user'
-import { ApiErrorType } from '@/types/api/error'
-import { EntityNotFoundError } from '@/types/error'
+import { EntityNotFoundError, InvalidDataReceivedError } from '@/types/error'
 
 jest.mock('@/lib/server-fetcher', () => ({
   serverFetcher: jest.fn(),
@@ -33,7 +32,7 @@ describe('getUser', () => {
 
     const expected = toUser(mockUserData)
 
-    mockServerFetcher.mockResolvedValue(mockUserData)
+    mockServerFetcher.mockResolvedValueOnce(mockUserData)
 
     const user = await getUser(validUsername)
 
@@ -45,11 +44,7 @@ describe('getUser', () => {
   })
 
   it('ユーザーが存在しない場合はエラーを返す', async () => {
-    const mockEntityNotFoundErrorData = {
-      message: 'Entity not found',
-      type: ApiErrorType.EntityNotFound,
-    }
-    mockServerFetcher.mockResolvedValue(mockEntityNotFoundErrorData)
+    mockServerFetcher.mockRejectedValueOnce(new EntityNotFoundError(''))
 
     const invalidUsername = '@invalidUsername'
 
@@ -57,30 +52,27 @@ describe('getUser', () => {
 
     expect(mockServerFetcher).toHaveBeenCalledWith(
       `${env.API_URL}/users/${invalidUsername}`,
-      { cache: 'no-store' },
+      {
+        cache: 'no-store',
+      },
     )
   })
 
-  it('その他のエラーレスポンスの場合はエラータイプとエラーメッセージを含むエラーを返す', async () => {
-    const mockOtherErrorData = {
-      message: 'Other error',
-      type: ApiErrorType.Unauthorized,
+  it('受け取ったデータが不正な場合はエラーを返す', async () => {
+    const mockInvalidData = {
+      invalidProperty: 'invalid',
     }
-    mockServerFetcher.mockResolvedValue(mockOtherErrorData)
+    mockServerFetcher.mockResolvedValueOnce(mockInvalidData)
 
-    await expect(getUser('otherError')).rejects.toThrow(
-      `APIリクエスト中にエラーが発生しました: ${mockOtherErrorData.type} ,${mockOtherErrorData.message}`,
+    await expect(getUser('@invalidData')).rejects.toThrow(
+      InvalidDataReceivedError,
     )
   })
 
-  it('エラーレスポンスの形式が不正な場合はエラーを返す', async () => {
-    const mockInvalidErrorData = {
-      message: 'Invalid error response',
-    }
-    mockServerFetcher.mockResolvedValue(mockInvalidErrorData)
+  it('その他のエラーの場合はエラーをそのまま返す', async () => {
+    const otherError = new Error('other error')
+    mockServerFetcher.mockRejectedValueOnce(otherError)
 
-    await expect(getUser('invalidError')).rejects.toThrow(
-      'エラーレスポンスの形式が不正です',
-    )
+    await expect(getUser('@invalidError')).rejects.toThrow(otherError)
   })
 })

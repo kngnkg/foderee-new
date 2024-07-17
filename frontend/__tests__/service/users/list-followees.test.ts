@@ -7,8 +7,7 @@ import { serverFetcher } from '@/lib/server-fetcher'
 import { generateApiUserForTest } from '@/lib/testutil/users'
 import { toUser } from '@/lib/transform/user'
 import { listFollowees } from '@/service/users/list-followees'
-import { ApiErrorType } from '@/types/api/error'
-import { EntityNotFoundError } from '@/types/error'
+import { EntityNotFoundError, InvalidDataReceivedError } from '@/types/error'
 
 jest.mock('@/lib/server-fetcher', () => ({
   serverFetcher: jest.fn(),
@@ -45,7 +44,7 @@ describe('listFollowees', () => {
       total: 2,
     }
 
-    mockServerFetcher.mockResolvedValue(mockFolloweesData)
+    mockServerFetcher.mockResolvedValueOnce(mockFolloweesData)
 
     const validUsername = '@validUsername'
 
@@ -69,7 +68,7 @@ describe('listFollowees', () => {
       total: 0,
     }
 
-    mockServerFetcher.mockResolvedValue(mockFolloweesData)
+    mockServerFetcher.mockResolvedValueOnce(mockFolloweesData)
 
     const validUsername = '@validUsername'
 
@@ -94,11 +93,7 @@ describe('listFollowees', () => {
   })
 
   it('ユーザーが存在しない場合はエラーを返す', async () => {
-    const mockEntityNotFoundErrorData = {
-      message: 'Entity not found',
-      type: ApiErrorType.EntityNotFound,
-    }
-    mockServerFetcher.mockResolvedValue(mockEntityNotFoundErrorData)
+    mockServerFetcher.mockRejectedValueOnce(new EntityNotFoundError(''))
 
     await expect(
       listFollowees('@invalidUsername', {
@@ -108,34 +103,29 @@ describe('listFollowees', () => {
     ).rejects.toThrow(EntityNotFoundError)
   })
 
-  it('その他のエラーレスポンスの場合はエラータイプとエラーメッセージを含むエラーを返す', async () => {
-    const mockOtherErrorData = {
-      message: 'Other error',
-      type: ApiErrorType.Unauthorized,
+  it('受け取ったデータが不正な場合はエラーを返す', async () => {
+    const mockInvalidData = {
+      invalidProperty: 'invalid',
     }
-    mockServerFetcher.mockResolvedValue(mockOtherErrorData)
+    mockServerFetcher.mockResolvedValueOnce(mockInvalidData)
 
     await expect(
-      listFollowees('otherError', {
+      listFollowees('@invalidData', {
         offset: 0,
         limit: 2,
       }),
-    ).rejects.toThrow(
-      `APIリクエスト中にエラーが発生しました: ${mockOtherErrorData.type} ,${mockOtherErrorData.message}`,
-    )
+    ).rejects.toThrow(InvalidDataReceivedError)
   })
 
-  it('エラーレスポンスの形式が不正な場合はエラーを返す', async () => {
-    const mockInvalidErrorData = {
-      message: 'Invalid error response',
-    }
-    mockServerFetcher.mockResolvedValue(mockInvalidErrorData)
+  it('その他のエラーの場合はエラーをそのまま返す', async () => {
+    const otherError = new Error('other error')
+    mockServerFetcher.mockRejectedValueOnce(otherError)
 
     await expect(
-      listFollowees('otherError', {
+      listFollowees('@invalidError', {
         offset: 0,
         limit: 2,
       }),
-    ).rejects.toThrow('エラーレスポンスの形式が不正です')
+    ).rejects.toThrow(otherError)
   })
 })
