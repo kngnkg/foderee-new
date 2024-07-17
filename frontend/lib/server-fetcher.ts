@@ -1,19 +1,20 @@
-import { ApiErrorType, isApiError } from '@/types/api/error'
+import { apiErrorResponseSchema, ApiErrorType } from '@/types/api/error'
+import { ApiError, EntityNotFoundError } from '@/types/error'
+import { ZodError } from 'zod'
 
 // サーバー側でfetchを行う関数
 export const serverFetcher = async (
   resource: RequestInfo,
   init?: RequestInit,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): Promise<any> => {
+): Promise<unknown> => {
   try {
     const res = await fetch(resource, init)
 
     if (!res.ok) {
-      const errorRes = await res.json()
-      if (!isApiError(errorRes)) {
-        throw new Error('エラーレスポンスの形式が不正です')
-      }
+      // TODO: ネットワークエラー時の処理
+
+      const data = await res.json()
+      const errRes = apiErrorResponseSchema.parse(data)
 
       switch (res.status) {
         case 401:
@@ -23,22 +24,25 @@ export const serverFetcher = async (
           // TODO: 権限エラー時の処理
           throw new Error('権限がありません。')
         case 404:
-          if (errorRes.type === ApiErrorType.EndpointNotFound) {
+          if (errRes.type === ApiErrorType.EndpointNotFound) {
             throw new Error('エンドポイントが見つかりませんでした')
           }
-          throw new Error(
-            errorRes.message ?? 'APIリクエスト中にエラーが発生しました',
-          )
-        default:
-          throw new Error(
-            errorRes.message ?? 'APIリクエスト中にエラーが発生しました',
-          )
+          if (errRes.type === ApiErrorType.EntityNotFound) {
+            throw new EntityNotFoundError(errRes.message)
+          }
+          break
       }
+
+      throw new ApiError(errRes.message, errRes.type)
     }
 
     const data = await res.json()
     return data
   } catch (e) {
+    if (e instanceof ZodError) {
+      throw new Error(`APIからのデータが不正です: ${e.message}`)
+    }
+
     throw e
   }
 }
