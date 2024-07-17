@@ -1,7 +1,7 @@
 import { paginationSchema } from '@/types/pagination'
 import * as z from 'zod'
 
-export const userNameSchema = z.z
+export const userNameSchema = z
   .string()
   .min(4, {
     message: 'ユーザー名は4文字以上で入力してください',
@@ -9,6 +9,9 @@ export const userNameSchema = z.z
   .max(20, {
     message: 'ユーザー名は20文字以下で入力してください',
   })
+  .regex(/^@/)
+
+export const immutableIdSchema = z.string().uuid()
 
 export const displayNameSchema = z
   .string()
@@ -36,7 +39,7 @@ export const profileSchema = z.object({
 
 export const userSchema = z.object({
   username: userNameSchema,
-  immutableId: z.string().uuid(),
+  immutableId: immutableIdSchema,
   displayName: displayNameSchema,
   avatarUrl: avatarUrlSchema,
   bio: bioSchema,
@@ -48,15 +51,15 @@ export const userSchema = z.object({
 
 export type User = z.infer<typeof userSchema>
 
+export function isUser(obj: unknown): obj is User {
+  return userSchema.safeParse(obj).success
+}
+
 export const usersWithPaginationSchema = paginationSchema.extend({
   users: z.array(userSchema),
 })
 
 export type UsersWithPagination = z.infer<typeof usersWithPaginationSchema>
-
-export function isUser(obj: unknown): obj is User {
-  return userSchema.safeParse(obj).success
-}
 
 export function isUsersWithPagination(
   obj: unknown,

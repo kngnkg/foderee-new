@@ -3,7 +3,7 @@ import { addPaginationParams } from '@/lib/add-pagination-params'
 import { serverFetcher } from '@/lib/server-fetcher'
 import { toUser } from '@/lib/transform/user'
 import { ApiErrorType, isApiError } from '@/types/api/error'
-import { isApiUsers } from '@/types/api/user'
+import { isApiUsersWithPagination } from '@/types/api/user'
 import { EntityNotFoundError } from '@/types/error'
 import type { PaginationParams } from '@/types/pagination'
 import type { UsersWithPagination } from '@/types/user'
@@ -20,7 +20,7 @@ export const listFollowees = async (
 
     const data = await serverFetcher(url, { cache: 'no-store' })
 
-    if (!isApiUsers(data)) {
+    if (!isApiUsersWithPagination(data)) {
       if (!isApiError(data)) {
         throw new Error('エラーレスポンスの形式が不正です')
       }

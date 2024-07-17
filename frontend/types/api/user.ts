@@ -1,14 +1,20 @@
 import * as z from 'zod'
 
-import { apiPaginationSchema } from '@/types/api/pagination'
-import { userNameSchema } from '@/types/user'
+import { paginationSchema } from '@/types/pagination'
+import {
+  avatarUrlSchema,
+  bioSchema,
+  displayNameSchema,
+  immutableIdSchema,
+  userNameSchema,
+} from '@/types/user'
 
 export const apiUserSchema = z.object({
   username: userNameSchema,
-  immutable_id: z.string().uuid(),
-  display_name: z.string(),
-  avatar_url: z.string().optional(),
-  bio: z.string().optional(),
+  immutable_id: immutableIdSchema,
+  display_name: displayNameSchema,
+  avatar_url: avatarUrlSchema,
+  bio: bioSchema,
   followers_count: z.number(),
   following_count: z.number(),
   created_at: z.string(),
@@ -21,12 +27,12 @@ export function isApiUser(obj: unknown): obj is ApiUser {
   return apiUserSchema.safeParse(obj).success
 }
 
-export const ApiUsersSchema = apiPaginationSchema.extend({
+export const apiUsersWithPaginationSchema = paginationSchema.extend({
   users: z.array(apiUserSchema),
 })
 
-export type ApiUsers = z.infer<typeof ApiUsersSchema>
+export type ApiUsers = z.infer<typeof apiUsersWithPaginationSchema>
 
-export function isApiUsers(obj: unknown): obj is ApiUsers {
-  return ApiUsersSchema.safeParse(obj).success
+export function isApiUsersWithPagination(obj: unknown): obj is ApiUsers {
+  return apiUsersWithPaginationSchema.safeParse(obj).success
 }
