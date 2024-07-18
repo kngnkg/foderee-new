@@ -21,7 +21,7 @@ export const userSchema = z.object({
       message: '表示名は200文字以下で入力してください',
     }),
   avatarUrl: z.string().url().or(z.literal('')),
-  bio: z.z
+  bio: z
     .string()
     .max(1000, {
       message: '自己紹介は1000文字以下で入力してください',
