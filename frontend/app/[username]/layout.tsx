@@ -6,7 +6,7 @@ import { Separator } from '@/components/ui/separator'
 import { UserCard } from '@/components/user-card'
 import { UserListDialog } from '@/components/users/user-list-dialog'
 import { getUser } from '@/service/users/get-user'
-import { EntityNotFoundError } from '@/types/error'
+import { AppError, AppErrorType } from '@/types/error'
 import { notFound } from 'next/navigation'
 
 interface UserLayoutProps {
@@ -51,7 +51,7 @@ export default async function UserLayout({
       </div>
     )
   } catch (e) {
-    if (e instanceof EntityNotFoundError) {
+    if (e instanceof AppError && e.type === AppErrorType.EntityNotFoundError) {
       return notFound()
     }
 

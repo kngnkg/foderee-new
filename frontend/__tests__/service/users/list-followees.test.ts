@@ -7,7 +7,7 @@ import { serverFetcher } from '@/lib/server-fetcher'
 import { generateApiUserForTest } from '@/lib/testutil/users'
 import { toUser } from '@/lib/transform/user'
 import { listFollowees } from '@/service/users/list-followees'
-import { EntityNotFoundError, InvalidDataReceivedError } from '@/types/error'
+import { AppError, AppErrorType } from '@/types/error'
 
 jest.mock('@/lib/server-fetcher', () => ({
   serverFetcher: jest.fn(),
@@ -93,14 +93,18 @@ describe('listFollowees', () => {
   })
 
   it('ユーザーが存在しない場合はエラーを返す', async () => {
-    mockServerFetcher.mockRejectedValueOnce(new EntityNotFoundError(''))
+    mockServerFetcher.mockRejectedValueOnce(
+      new AppError('', AppErrorType.EntityNotFoundError),
+    )
 
-    await expect(
-      listFollowees('@invalidUsername', {
-        offset: 0,
-        limit: 2,
-      }),
-    ).rejects.toThrow(EntityNotFoundError)
+    const errObj = await listFollowees('@invalidUsername', {
+      offset: 0,
+      limit: 2,
+    }).catch((e) => e)
+
+    expect(errObj).toBeInstanceOf(AppError)
+
+    expect((errObj as AppError).type).toBe(AppErrorType.EntityNotFoundError)
   })
 
   it('受け取ったデータが不正な場合はエラーを返す', async () => {
@@ -109,23 +113,26 @@ describe('listFollowees', () => {
     }
     mockServerFetcher.mockResolvedValueOnce(mockInvalidData)
 
-    await expect(
-      listFollowees('@invalidData', {
-        offset: 0,
-        limit: 2,
-      }),
-    ).rejects.toThrow(InvalidDataReceivedError)
+    const errObj = await listFollowees('@invalidData', {
+      offset: 0,
+      limit: 2,
+    }).catch((e) => e)
+    expect(errObj).toBeInstanceOf(AppError)
+
+    expect((errObj as AppError).type).toBe(
+      AppErrorType.InvalidDataReceivedError,
+    )
   })
 
   it('その他のエラーの場合はエラーをそのまま返す', async () => {
     const otherError = new Error('other error')
     mockServerFetcher.mockRejectedValueOnce(otherError)
 
-    await expect(
-      listFollowees('@invalidError', {
-        offset: 0,
-        limit: 2,
-      }),
-    ).rejects.toThrow(otherError)
+    const errObj = await listFollowees('@invalidError', {
+      offset: 0,
+      limit: 2,
+    }).catch((e) => e)
+
+    expect(errObj).toBe(otherError)
   })
 })

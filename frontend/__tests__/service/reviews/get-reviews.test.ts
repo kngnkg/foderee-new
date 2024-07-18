@@ -9,7 +9,7 @@ import { generateSpotifySingleAlbumResponseForTest } from '@/lib/testutil/albums
 import { generateApiReviewForTest } from '@/lib/testutil/reviews'
 import { toReview } from '@/lib/transform/review'
 import { getReview } from '@/service/reviews/get-review'
-import { EntityNotFoundError } from '@/types/error'
+import { AppError, AppErrorType } from '@/types/error'
 
 jest.mock('@/lib/server-fetcher', () => ({
   serverFetcher: jest.fn(),
@@ -41,10 +41,8 @@ describe('getReview', () => {
   })
 
   it('レビューが存在する場合はレビューデータを返す', async () => {
-    const validReviewId = 'b4606453-f786-42ae-a073-2d7afe9c94c5'
-
     const mockAlbumData = generateSpotifySingleAlbumResponseForTest()
-
+    const validReviewId = 'b4606453-f786-42ae-a073-2d7afe9c94c5'
     const mockReviewData = generateApiReviewForTest({
       review_id: validReviewId,
       album_id: mockAlbumData.id,
@@ -67,13 +65,15 @@ describe('getReview', () => {
   })
 
   it('レビューが存在しない場合はエラーを返す', async () => {
-    mockServerFetcher.mockRejectedValueOnce(new EntityNotFoundError(''))
-
+    mockServerFetcher.mockRejectedValueOnce(
+      new AppError('', AppErrorType.EntityNotFoundError),
+    )
     const invalidReviewId = 'a3bb189e-8bf9-3888-9912-ace4e6543002'
 
-    await expect(getReview(invalidReviewId)).rejects.toThrow(
-      EntityNotFoundError,
-    )
+    const errObj = await getReview(invalidReviewId).catch((e) => e)
+    expect(errObj).toBeInstanceOf(AppError)
+
+    expect((errObj as AppError).type).toBe(AppErrorType.EntityNotFoundError)
 
     expect(mockServerFetcher).toHaveBeenCalledWith(
       `${env.API_URL}/reviews/${invalidReviewId}`,
