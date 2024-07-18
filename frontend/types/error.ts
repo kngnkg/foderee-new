@@ -4,6 +4,7 @@ export const AppErrorType = {
   EntityNotFoundError: 'EntityNotFoundError',
   InvalidDataReceivedError: 'InvalidDataReceivedError',
   SpotifyError: 'SpotifyError',
+  SpotifyTokenCannotRetrieveError: 'SpotifyTokenCannotRetrieveError',
   SpotifyRateLimitError: 'SpotifyRateLimitError',
   SpotifyResourceNotFoundError: 'SpotifyResourceNotFoundError',
   RetryLimitExceededError: 'RetryLimitExceededError',
