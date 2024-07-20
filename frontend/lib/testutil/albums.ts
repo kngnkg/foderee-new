@@ -1,4 +1,12 @@
 import type { Album, Artist, Track } from '@/types/album'
+import type {
+  SpotifyAlbumSearchResponse,
+  SpotifySingleAlbumResponse,
+} from '@/types/spotify/album'
+import {
+  spotifyAlbumSearchResponseSchema,
+  spotifySingleAlbumResponseSchema,
+} from '@/types/spotify/album'
 
 export const generateArtistForTest = (data: Partial<Artist>): Artist => ({
   artistId: 'testArtistId',
@@ -32,8 +40,8 @@ export const generateAlbumForTest = (data: Partial<Album>): Album => ({
 })
 
 export const generateSpotifySingleAlbumResponseForTest =
-  (): SpotifyApi.SingleAlbumResponse => {
-    return {
+  (): SpotifySingleAlbumResponse => {
+    const response = {
       album_type: 'compilation',
       total_tracks: 9,
       available_markets: ['CA', 'BR', 'IT'],
@@ -60,7 +68,7 @@ export const generateSpotifySingleAlbumResponseForTest =
       artists: [
         {
           external_urls: {
-            spotify: 'string',
+            spotify: 'https://example.com/album',
           },
           href: 'string',
           id: 'string',
@@ -102,7 +110,7 @@ export const generateSpotifySingleAlbumResponseForTest =
             is_playable: false,
             linked_from: {
               external_urls: {
-                spotify: 'string',
+                spotify: 'https://example.com/album',
               },
               href: 'string',
               id: 'string',
@@ -135,11 +143,13 @@ export const generateSpotifySingleAlbumResponseForTest =
       label: 'string',
       popularity: 0,
     }
+
+    return spotifySingleAlbumResponseSchema.parse(response)
   }
 
 export const generateAlbumSearchResponseForTest =
-  (): SpotifyApi.AlbumSearchResponse => {
-    return {
+  (): SpotifyAlbumSearchResponse => {
+    const response = {
       albums: {
         href: 'https://api.spotify.com/v1/me/shows?offset=0&limit=20',
         limit: 20,
@@ -153,7 +163,7 @@ export const generateAlbumSearchResponseForTest =
             total_tracks: 9,
             available_markets: ['CA', 'BR', 'IT'],
             external_urls: {
-              spotify: 'string',
+              spotify: 'https://example.com/album',
             },
             href: 'string',
             id: '2up3OPMp9Tb4dAKM2erWXQ',
@@ -175,7 +185,7 @@ export const generateAlbumSearchResponseForTest =
             artists: [
               {
                 external_urls: {
-                  spotify: 'string',
+                  spotify: 'https://example.com/album',
                 },
                 href: 'string',
                 id: 'string',
@@ -188,4 +198,6 @@ export const generateAlbumSearchResponseForTest =
         ],
       },
     }
+
+    return spotifyAlbumSearchResponseSchema.parse(response)
   }

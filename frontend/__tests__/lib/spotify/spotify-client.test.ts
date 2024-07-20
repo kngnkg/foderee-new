@@ -143,7 +143,6 @@ describe('spotifyClient', () => {
         },
       }
       mockFetch.mockResolvedValueOnce(mockResp)
-
       const validId = '2up3OPMp9Tb4dAKM2erWXQ'
 
       const resp = await spotifyClient.getAlbum(validId)
@@ -190,6 +189,35 @@ describe('spotifyClient', () => {
       expect(errObj).toBeInstanceOf(AppError)
       expect((errObj as AppError).type).toBe(
         AppErrorType.SpotifyResourceNotFoundError,
+      )
+    })
+
+    it('受け取ったデータが不正な場合はエラーを投げる', async () => {
+      const spotifyClient = new SpotifyClient({
+        clientId: 'client_id',
+        clientSecret: 'client_secret',
+      })
+      spotifyClient.setAccessToken = jest.fn()
+      const mockSetAccessToken = spotifyClient.setAccessToken as jest.Mock
+      mockSetAccessToken.mockResolvedValueOnce({})
+      const mockResp = {
+        ok: true,
+        body: {
+          invalidProperty: 'invalid',
+        },
+        json() {
+          return Promise.resolve(this.body)
+        },
+      }
+      mockFetch.mockResolvedValueOnce(mockResp)
+
+      const validId = '2up3OPMp9Tb4dAKM2erWXQ'
+
+      const errObj = await spotifyClient.getAlbum(validId).catch((e) => e)
+
+      expect(errObj).toBeInstanceOf(AppError)
+      expect((errObj as AppError).type).toBe(
+        AppErrorType.InvalidDataReceivedError,
       )
     })
 
@@ -267,14 +295,7 @@ describe('spotifyClient', () => {
       mockSetAccessToken.mockResolvedValueOnce({})
       const mockResp = {
         ok: true,
-        body: {
-          albums: {
-            items: [generateAlbumSearchResponseForTest()],
-            total: 1,
-            offset: 0,
-            limit: 1,
-          },
-        },
+        body: generateAlbumSearchResponseForTest(),
         json() {
           return Promise.resolve(this.body)
         },
@@ -325,6 +346,39 @@ describe('spotifyClient', () => {
       const resp = await spotifyClient.searchAlbums(params)
 
       expect(resp).toEqual(mockResp.body)
+    })
+
+    it('受け取ったデータが不正な場合はエラーを投げる', async () => {
+      const spotifyClient = new SpotifyClient({
+        clientId: 'client_id',
+        clientSecret: 'client_secret',
+      })
+      spotifyClient.setAccessToken = jest.fn()
+      const mockSetAccessToken = spotifyClient.setAccessToken as jest.Mock
+      mockSetAccessToken.mockResolvedValueOnce({})
+      const mockResp = {
+        ok: true,
+        body: {
+          invalidProperty: 'invalid',
+        },
+        json() {
+          return Promise.resolve(this.body)
+        },
+      }
+      mockFetch.mockResolvedValueOnce(mockResp)
+
+      const params = {
+        q: 'test',
+        limit: 10,
+        offset: 0,
+      }
+
+      const errObj = await spotifyClient.searchAlbums(params).catch((e) => e)
+
+      expect(errObj).toBeInstanceOf(AppError)
+      expect((errObj as AppError).type).toBe(
+        AppErrorType.InvalidDataReceivedError,
+      )
     })
 
     it('その他のエラーの場合はエラーをそのまま投げる', async () => {

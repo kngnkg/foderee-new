@@ -2,6 +2,14 @@ import { env } from '@/env.mjs'
 import { isTokenExpired } from '@/lib/is-token-expired'
 import { AppError, AppErrorType } from '@/types/error'
 import type { SearchParams } from '@/types/pagination'
+import type {
+  SpotifyAlbumSearchResponse,
+  SpotifySingleAlbumResponse,
+} from '@/types/spotify/album'
+import {
+  spotifyAlbumSearchResponseSchema,
+  spotifySingleAlbumResponseSchema,
+} from '@/types/spotify/album'
 import { spotifyErrorSchema } from '@/types/spotify/error'
 import { spotifyTokenSchema } from '@/types/spotify/token'
 import { ZodError } from 'zod'
@@ -79,7 +87,7 @@ export class SpotifyClient {
     }
   }
 
-  async getAlbum(albumId: string): Promise<SpotifyApi.SingleAlbumResponse> {
+  async getAlbum(albumId: string): Promise<SpotifySingleAlbumResponse> {
     try {
       const data = await this._executeRequest(
         `${this._baseUrl}/albums/${albumId}`,
@@ -90,15 +98,24 @@ export class SpotifyClient {
         },
       )
 
-      return data as SpotifyApi.SingleAlbumResponse
+      const album = spotifySingleAlbumResponseSchema.parse(data)
+
+      return album
     } catch (e) {
+      if (e instanceof ZodError) {
+        throw new AppError(
+          `Spotifyからのデータが不正です: ${e.message}`,
+          AppErrorType.InvalidDataReceivedError,
+        )
+      }
+
       throw e
     }
   }
 
   async searchAlbums(
     params: SearchParams,
-  ): Promise<SpotifyApi.AlbumSearchResponse> {
+  ): Promise<SpotifyAlbumSearchResponse> {
     try {
       const data = await this._executeRequest(
         `${this._baseUrl}/search?q=${params.q}&type=album&limit=${params.limit}&offset=${params.offset}`,
@@ -109,8 +126,17 @@ export class SpotifyClient {
         },
       )
 
-      return data as SpotifyApi.AlbumSearchResponse
+      const parsed = spotifyAlbumSearchResponseSchema.parse(data)
+
+      return parsed
     } catch (e) {
+      if (e instanceof ZodError) {
+        throw new AppError(
+          `Spotifyからのデータが不正です: ${e.message}`,
+          AppErrorType.InvalidDataReceivedError,
+        )
+      }
+
       throw e
     }
   }
