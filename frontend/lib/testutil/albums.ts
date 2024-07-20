@@ -147,7 +147,7 @@ export const generateSpotifySingleAlbumResponseForTest =
     return spotifySingleAlbumResponseSchema.parse(response)
   }
 
-export const generateAlbumSearchResponseForTest =
+export const generateSpotifyAlbumSearchResponseForTest =
   (): SpotifyAlbumSearchResponse => {
     const response = {
       albums: {
