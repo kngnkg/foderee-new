@@ -25,12 +25,12 @@ export async function GET(request: NextRequest) {
       return errResponse('invalid query', BffErrorType.BadRequest)
     }
 
-    const albumsWP = await searchAlbums(params)
-    if (!albumsWP) {
+    const pagedAlbums = await searchAlbums(params)
+    if (!pagedAlbums) {
       return errResponse('album not found', BffErrorType.EntityNotFound)
     }
 
-    return NextResponse.json(albumsWP)
+    return NextResponse.json(pagedAlbums)
   } catch (e) {
     return errInternal(e)
   }
