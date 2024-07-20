@@ -3,7 +3,10 @@
  */
 
 import { SpotifyClient } from '@/lib/spotify/spotify-client'
-import { generateSpotifySingleAlbumResponseForTest } from '@/lib/testutil/albums'
+import {
+  generateAlbumSearchResponseForTest,
+  generateSpotifySingleAlbumResponseForTest,
+} from '@/lib/testutil/albums'
 import { AppError, AppErrorType } from '@/types/error'
 
 jest.mock('@/env.mjs', () => ({
@@ -204,6 +207,144 @@ describe('spotifyClient', () => {
       const validId = '2up3OPMp9Tb4dAKM2erWXQ'
 
       const errObj = await spotifyClient.getAlbum(validId).catch((e) => e)
+
+      expect(errObj).toBe(otherError)
+    })
+  })
+
+  describe('searchAlbums', () => {
+    it('正しいフォーマットのリクエストが送信される', async () => {
+      const spotifyClient = new SpotifyClient({
+        clientId: 'client_id',
+        clientSecret: 'client_secret',
+      })
+      spotifyClient.setAccessToken = jest.fn()
+      const mockSetAccessToken = spotifyClient.setAccessToken as jest.Mock
+      mockSetAccessToken.mockResolvedValueOnce({})
+      const mockResp = {
+        ok: true,
+        body: {
+          albums: {
+            items: [],
+            total: 0,
+            offset: 0,
+            limit: 0,
+          },
+        },
+        json() {
+          return Promise.resolve(this.body)
+        },
+      }
+      mockFetch.mockResolvedValueOnce(mockResp)
+
+      const params = {
+        q: 'test',
+        limit: 10,
+        offset: 0,
+      }
+
+      await spotifyClient.searchAlbums(params)
+
+      expect(mockFetch).toHaveBeenCalledWith(
+        `https://api.spotify.com/v1/search?q=${params.q}&type=album&limit=${params.limit}&offset=${params.offset}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${spotifyClient.accessToken}`,
+          },
+          next: { revalidate: 3600 },
+        },
+      )
+    })
+
+    it('アルバムが存在する場合はアルバムリストを返す', async () => {
+      const spotifyClient = new SpotifyClient({
+        clientId: 'client_id',
+        clientSecret: 'client_secret',
+      })
+      spotifyClient.setAccessToken = jest.fn()
+      const mockSetAccessToken = spotifyClient.setAccessToken as jest.Mock
+      mockSetAccessToken.mockResolvedValueOnce({})
+      const mockResp = {
+        ok: true,
+        body: {
+          albums: {
+            items: [generateAlbumSearchResponseForTest()],
+            total: 1,
+            offset: 0,
+            limit: 1,
+          },
+        },
+        json() {
+          return Promise.resolve(this.body)
+        },
+      }
+      mockFetch.mockResolvedValueOnce(mockResp)
+
+      const params = {
+        q: 'test',
+        limit: 10,
+        offset: 0,
+      }
+
+      const resp = await spotifyClient.searchAlbums(params)
+
+      expect(resp).toEqual(mockResp.body)
+    })
+
+    it('アルバムが存在しない場合は空のアルバムリストを返す', async () => {
+      const spotifyClient = new SpotifyClient({
+        clientId: 'client_id',
+        clientSecret: 'client_secret',
+      })
+      spotifyClient.setAccessToken = jest.fn()
+      const mockSetAccessToken = spotifyClient.setAccessToken as jest.Mock
+      mockSetAccessToken.mockResolvedValueOnce({})
+      const mockResp = {
+        ok: true,
+        body: {
+          albums: {
+            items: [],
+            total: 0,
+            offset: 0,
+            limit: 0,
+          },
+        },
+        json() {
+          return Promise.resolve(this.body)
+        },
+      }
+      mockFetch.mockResolvedValueOnce(mockResp)
+
+      const params = {
+        q: 'test',
+        limit: 10,
+        offset: 0,
+      }
+
+      const resp = await spotifyClient.searchAlbums(params)
+
+      expect(resp).toEqual(mockResp.body)
+    })
+
+    it('その他のエラーの場合はエラーをそのまま投げる', async () => {
+      const spotifyClient = new SpotifyClient({
+        clientId: 'client_id',
+        clientSecret: 'client_secret',
+      })
+      spotifyClient.setAccessToken = jest.fn()
+      const mockSetAccessToken = spotifyClient.setAccessToken as jest.Mock
+      mockSetAccessToken.mockResolvedValueOnce({})
+      const otherError = new Error('other error')
+      mockFetch.mockRejectedValueOnce(otherError)
+
+      const params = {
+        q: 'test',
+        limit: 10,
+        offset: 0,
+      }
+
+      const errObj = await spotifyClient.searchAlbums(params).catch((e) => e)
 
       expect(errObj).toBe(otherError)
     })

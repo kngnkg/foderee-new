@@ -1,6 +1,7 @@
 import { env } from '@/env.mjs'
 import { isTokenExpired } from '@/lib/is-token-expired'
 import { AppError, AppErrorType } from '@/types/error'
+import type { SearchParams } from '@/types/pagination'
 import { spotifyErrorSchema } from '@/types/spotify/error'
 import { spotifyTokenSchema } from '@/types/spotify/token'
 import { ZodError } from 'zod'
@@ -90,6 +91,25 @@ export class SpotifyClient {
       )
 
       return data as SpotifyApi.SingleAlbumResponse
+    } catch (e) {
+      throw e
+    }
+  }
+
+  async searchAlbums(
+    params: SearchParams,
+  ): Promise<SpotifyApi.AlbumSearchResponse> {
+    try {
+      const data = await this._executeRequest(
+        `${this._baseUrl}/search?q=${params.q}&type=album&limit=${params.limit}&offset=${params.offset}`,
+        {
+          method: 'GET',
+          headers: { Authorization: 'Bearer ' + this.accessToken },
+          next: { revalidate: 3600 },
+        },
+      )
+
+      return data as SpotifyApi.AlbumSearchResponse
     } catch (e) {
       throw e
     }
