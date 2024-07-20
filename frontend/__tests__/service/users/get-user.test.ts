@@ -7,7 +7,7 @@ import { serverFetcher } from '@/lib/server-fetcher'
 import { generateApiUserForTest } from '@/lib/testutil/users'
 import { toUser } from '@/lib/transform/user'
 import { getUser } from '@/service/users/get-user'
-import { EntityNotFoundError, InvalidDataReceivedError } from '@/types/error'
+import { AppError, AppErrorType } from '@/types/error'
 
 jest.mock('@/lib/server-fetcher', () => ({
   serverFetcher: jest.fn(),
@@ -44,11 +44,16 @@ describe('getUser', () => {
   })
 
   it('ユーザーが存在しない場合はエラーを返す', async () => {
-    mockServerFetcher.mockRejectedValueOnce(new EntityNotFoundError(''))
-
+    mockServerFetcher.mockRejectedValueOnce(
+      new AppError('', AppErrorType.EntityNotFoundError),
+    )
     const invalidUsername = '@invalidUsername'
 
-    await expect(getUser(invalidUsername)).rejects.toThrow(EntityNotFoundError)
+    const errObj = await getUser(invalidUsername).catch((e) => e)
+
+    expect(errObj).toBeInstanceOf(AppError)
+
+    expect((errObj as AppError).type).toBe(AppErrorType.EntityNotFoundError)
 
     expect(mockServerFetcher).toHaveBeenCalledWith(
       `${env.API_URL}/users/${invalidUsername}`,
@@ -63,9 +68,17 @@ describe('getUser', () => {
       invalidProperty: 'invalid',
     }
     mockServerFetcher.mockResolvedValueOnce(mockInvalidData)
+    const errObj = await getUser('@invalidData').catch((e) => e)
 
-    await expect(getUser('@invalidData')).rejects.toThrow(
-      InvalidDataReceivedError,
+    expect(errObj).toBeInstanceOf(AppError)
+
+    expect((errObj as AppError).type).toBe(
+      AppErrorType.InvalidDataReceivedError,
+    )
+
+    expect(mockServerFetcher).toHaveBeenCalledWith(
+      `${env.API_URL}/users/@invalidData`,
+      { cache: 'no-store' },
     )
   })
 
@@ -73,6 +86,8 @@ describe('getUser', () => {
     const otherError = new Error('other error')
     mockServerFetcher.mockRejectedValueOnce(otherError)
 
-    await expect(getUser('@invalidError')).rejects.toThrow(otherError)
+    const errObj = await getUser('@invalidError').catch((e) => e)
+
+    expect(errObj).toBe(otherError)
   })
 })

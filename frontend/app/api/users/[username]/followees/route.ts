@@ -4,7 +4,7 @@ import { userRouteContextSchema } from '@/app/api/route-context'
 import { getPaginationParamsFromRequest } from '@/app/api/utils'
 import { listFollowees } from '@/service/users/list-followees'
 import { BffErrorType } from '@/types/bff-error'
-import { EntityNotFoundError } from '@/types/error'
+import { AppError, AppErrorType } from '@/types/error'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest, context: UserRouteContext) {
 
     return NextResponse.json(usersWP)
   } catch (e) {
-    if (e instanceof EntityNotFoundError) {
+    if (e instanceof AppError && e.type === AppErrorType.EntityNotFoundError) {
       return errResponse('user not found', BffErrorType.EntityNotFound)
     }
 

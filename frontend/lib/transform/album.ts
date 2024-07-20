@@ -4,9 +4,15 @@ import type {
   ArtistSimplified,
   Track,
 } from '@/types/album'
+import type {
+  SpotifyAlbumObjectSimplified,
+  SpotifyArtistObjectSimplified,
+  SpotifySingleAlbumResponse,
+  SpotifyTrackObjectSimplified,
+} from '@/types/spotify/album'
 
 export function toArtistSimplified(
-  data: SpotifyApi.ArtistObjectSimplified,
+  data: SpotifyArtistObjectSimplified,
 ): ArtistSimplified {
   return {
     artistId: data.id,
@@ -14,7 +20,7 @@ export function toArtistSimplified(
   }
 }
 
-export function toTrack(data: SpotifyApi.TrackObjectSimplified): Track {
+export function toTrack(data: SpotifyTrackObjectSimplified): Track {
   return {
     trackId: data.id,
     spotifyUri: data.uri,
@@ -25,7 +31,7 @@ export function toTrack(data: SpotifyApi.TrackObjectSimplified): Track {
   }
 }
 
-export function toAlbum(data: SpotifyApi.SingleAlbumResponse): Album {
+export function toAlbum(data: SpotifySingleAlbumResponse): Album {
   return {
     albumId: data.id,
     spotifyUri: data.uri,
@@ -39,7 +45,7 @@ export function toAlbum(data: SpotifyApi.SingleAlbumResponse): Album {
 }
 
 export function toAlbumSimplified(
-  data: SpotifyApi.AlbumObjectSimplified,
+  data: SpotifyAlbumObjectSimplified,
 ): AlbumSimplified {
   return {
     albumId: data.id,

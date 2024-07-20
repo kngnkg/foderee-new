@@ -2,10 +2,11 @@ import { toAlbum } from '@/lib/transform/album'
 import { toUser } from '@/lib/transform/user'
 import type { ApiReview } from '@/types/api/review'
 import type { Review } from '@/types/review'
+import type { SpotifySingleAlbumResponse } from '@/types/spotify/album'
 
 export function toReview(
   apiReview: ApiReview,
-  apiAlbum: SpotifyApi.SingleAlbumResponse,
+  apiAlbum: SpotifySingleAlbumResponse,
 ): Review {
   return {
     reviewId: apiReview.review_id,

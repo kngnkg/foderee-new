@@ -1,5 +1,5 @@
 import { apiErrorResponseSchema, ApiErrorType } from '@/types/api/error'
-import { ApiError, EntityNotFoundError } from '@/types/error'
+import { AppError, AppErrorType } from '@/types/error'
 import { ZodError } from 'zod'
 
 // サーバー側でfetchを行う関数
@@ -28,12 +28,12 @@ export const serverFetcher = async (
             throw new Error('エンドポイントが見つかりませんでした')
           }
           if (errRes.type === ApiErrorType.EntityNotFound) {
-            throw new EntityNotFoundError(errRes.message)
+            throw new AppError(errRes.message, AppErrorType.EntityNotFoundError)
           }
           break
       }
 
-      throw new ApiError(errRes.message, errRes.type)
+      throw new AppError(`APIエラー: ${errRes.message}`, AppErrorType.ApiError)
     }
 
     const data = await res.json()
