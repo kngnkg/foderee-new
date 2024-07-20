@@ -43,5 +43,5 @@ export const errInternal = (e: unknown) => {
 
   console.error(`unknown error: ${e}`)
 
-  return errResponse('API request failed', BffErrorType.InternalServerError)
+  return errResponse('Internal Server Error', BffErrorType.InternalServerError)
 }
