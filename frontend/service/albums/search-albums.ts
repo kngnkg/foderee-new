@@ -1,31 +1,21 @@
-import { setSpotifyClientAccessToken, spotifyClient } from '@/lib/spotify'
+import { spotifyClient } from '@/lib/spotify/spotify-client'
 import { toAlbumSimplified } from '@/lib/transform/album'
-import type { AlbumsWithPagination } from '@/types/album'
+import type { PagedAlbums } from '@/types/album'
 import type { SearchParams } from '@/types/pagination'
 
 export const searchAlbums = async (
   params: SearchParams,
-): Promise<AlbumsWithPagination | null> => {
+): Promise<PagedAlbums> => {
   try {
-    await setSpotifyClientAccessToken(spotifyClient)
-    const resp = await spotifyClient.searchAlbums(params.q, {
-      limit: params.limit,
-      offset: params.offset,
-    })
-    const data = resp.body
-
-    if (!data || !data.albums) {
-      throw new Error('Failed to fetch album')
-    }
+    const resp = await spotifyClient.searchAlbums(params)
 
     return {
-      albums: data.albums.items.map((item) => toAlbumSimplified(item)),
-      total: data.albums.total,
-      offset: data.albums.offset,
-      limit: data.albums.limit,
+      albums: resp.albums.items.map((item) => toAlbumSimplified(item)),
+      total: resp.albums.total,
+      offset: resp.albums.offset,
+      limit: resp.albums.limit,
     }
   } catch (e) {
-    console.error(e)
-    return null
+    throw e
   }
 }

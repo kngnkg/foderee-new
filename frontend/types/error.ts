@@ -3,6 +3,7 @@ export const AppErrorType = {
   ApiError: 'ApiError',
   EntityNotFoundError: 'EntityNotFoundError',
   InvalidDataReceivedError: 'InvalidDataReceivedError',
+  InvalidRequestError: 'InvalidRequestError',
   SpotifyError: 'SpotifyError',
   SpotifyTokenCannotRetrieveError: 'SpotifyTokenCannotRetrieveError',
   SpotifyRateLimitError: 'SpotifyRateLimitError',

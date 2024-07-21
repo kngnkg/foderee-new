@@ -1,8 +1,11 @@
 import { BffErrorType, type BffError } from '@/types/bff-error'
-import { AppError } from '@/types/error'
+import { AppError, AppErrorType } from '@/types/error'
 import { NextResponse } from 'next/server'
 
-export const errResponse = (message: string, errType: BffErrorType) => {
+export const errResponse = (
+  message: string,
+  errType: BffErrorType,
+): NextResponse => {
   let statusCode = 500
   switch (errType) {
     case BffErrorType.BadRequest:
@@ -32,16 +35,36 @@ export const errResponse = (message: string, errType: BffErrorType) => {
   return NextResponse.json(body, { status: statusCode })
 }
 
-export const errInternal = (e: unknown) => {
+export const handleError = (e: unknown): NextResponse => {
+  const internalServerErrorResp = errResponse(
+    'Internal Server Error',
+    BffErrorType.InternalServerError,
+  )
+
   if (e instanceof Error) {
     if (e instanceof AppError) {
-      console.error(`AppError: ${e.message}`)
+      switch (e.type) {
+        case AppErrorType.InvalidRequestError:
+          return errResponse(
+            'Invalid query parameters',
+            BffErrorType.BadRequest,
+          )
+        case AppErrorType.EntityNotFoundError:
+          return errResponse('Entity not found', BffErrorType.EntityNotFound)
+        case AppErrorType.UnknownError:
+          console.error(`AppError: ${e.message}`, e.stack)
+          return internalServerErrorResp
+        default:
+          console.error(`AppError: ${e.message}`)
+          return internalServerErrorResp
+      }
     }
 
-    console.error(`error: ${e.message}`)
+    console.error(`error: ${e.message}`, e.stack)
+    return internalServerErrorResp
   }
 
-  console.error(`unknown error: ${e}`)
-
-  return errResponse('API request failed', BffErrorType.InternalServerError)
+  // 不明なエラー
+  console.error('unknown error: ', e)
+  return internalServerErrorResp
 }

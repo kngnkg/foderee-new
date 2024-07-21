@@ -1,4 +1,4 @@
-import type { AlbumsWithPagination } from '@/types/album'
+import type { PagedAlbums } from '@/types/album'
 import useSWRInfinite from 'swr/infinite'
 
 import { env } from '@/env.mjs'
@@ -11,7 +11,7 @@ interface UseAlbumsProps {
 }
 
 interface UseAlbums {
-  data: AlbumsWithPagination[] | undefined
+  data: PagedAlbums[] | undefined
   error: Error | undefined
   isLoading: boolean
   isValidating: boolean
@@ -21,7 +21,7 @@ interface UseAlbums {
 const fetcher = async (
   resource: RequestInfo,
   init?: RequestInit,
-): Promise<AlbumsWithPagination> => {
+): Promise<PagedAlbums> => {
   const data = await clientFetcher(resource, init)
   // TODO: エラーハンドリング
 
@@ -37,10 +37,7 @@ const fetcher = async (
 export const useAlbums = ({ query, limit = 20 }: UseAlbumsProps): UseAlbums => {
   const endpoint = `${env.NEXT_PUBLIC_API_URL}/album-search?q=${query}`
 
-  const getKey = (
-    pageIndex: number,
-    previousPageData: AlbumsWithPagination,
-  ) => {
+  const getKey = (pageIndex: number, previousPageData: PagedAlbums) => {
     // 検索クエリがない場合
     if (query === '') {
       return null
@@ -61,7 +58,7 @@ export const useAlbums = ({ query, limit = 20 }: UseAlbumsProps): UseAlbums => {
   }
 
   const { data, error, isLoading, isValidating, size, setSize } =
-    useSWRInfinite<AlbumsWithPagination>(getKey, fetcher)
+    useSWRInfinite<PagedAlbums>(getKey, fetcher)
 
   // 次のページを読み込む
   const loadMore = () => setSize(size + 1)

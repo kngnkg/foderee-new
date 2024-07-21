@@ -4,12 +4,12 @@ import * as React from 'react'
 
 import { AlbumArt } from '@/components/album-art'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { AlbumsWithPagination } from '@/types/album'
+import type { PagedAlbums } from '@/types/album'
 import { useFormContext } from 'react-hook-form'
 
 interface AlbumListProps {
   onClick: () => void
-  data: AlbumsWithPagination[] | undefined
+  data: PagedAlbums[] | undefined
   isLoading: boolean
 }
 
@@ -45,10 +45,10 @@ export const AlbumList: React.FC<AlbumListProps> = ({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4">
-        {data.map((albumWithPagination, idx) => {
+        {data.map((pagedAlbums, idx) => {
           return (
             <ul key={idx} className="flex flex-col gap-4">
-              {albumWithPagination.albums.map((album, idx) => (
+              {pagedAlbums.albums.map((album, idx) => (
                 <li
                   key={idx}
                   className="flex cursor-pointer items-center gap-4"

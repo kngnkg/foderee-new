@@ -29,9 +29,9 @@ export const UserList: React.FC<UserListProps> = ({ endpoint }) => {
     <div className="flex flex-col gap-4">
       {data ? (
         <>
-          {data.map((userWP, idx) => (
+          {data.map((pagedUsers, idx) => (
             <>
-              {userWP.users.map((user: User) => (
+              {pagedUsers.users.map((user: User) => (
                 <div key={idx} className="flex items-center justify-between">
                   <Suspense fallback={<UserSkeleton />}>
                     <UserCard user={user} cardSize="s" />

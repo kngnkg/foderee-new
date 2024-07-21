@@ -4,7 +4,7 @@
 
 import { SpotifyClient } from '@/lib/spotify/spotify-client'
 import {
-  generateAlbumSearchResponseForTest,
+  generateSpotifyAlbumSearchResponseForTest,
   generateSpotifySingleAlbumResponseForTest,
 } from '@/lib/testutil/albums'
 import { AppError, AppErrorType } from '@/types/error'
@@ -295,7 +295,7 @@ describe('spotifyClient', () => {
       mockSetAccessToken.mockResolvedValueOnce({})
       const mockResp = {
         ok: true,
-        body: generateAlbumSearchResponseForTest(),
+        body: generateSpotifyAlbumSearchResponseForTest(),
         json() {
           return Promise.resolve(this.body)
         },

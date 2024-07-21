@@ -1,4 +1,10 @@
-import type { Album, Artist, Track } from '@/types/album'
+import type { AlbumSimplified } from '@/types/album'
+import {
+  albumSimplifiedSchema,
+  type Album,
+  type Artist,
+  type Track,
+} from '@/types/album'
 import type {
   SpotifyAlbumSearchResponse,
   SpotifySingleAlbumResponse,
@@ -38,6 +44,14 @@ export const generateAlbumForTest = (data: Partial<Album>): Album => ({
   coverUrl: 'http://example.com/album.jpg',
   ...data,
 })
+
+export const generateAlbumSimplifiedForTest = (
+  data: Partial<Album>,
+): AlbumSimplified => {
+  const full = generateAlbumForTest(data)
+  const simplified = albumSimplifiedSchema.parse(full)
+  return simplified
+}
 
 export const generateSpotifySingleAlbumResponseForTest =
   (): SpotifySingleAlbumResponse => {
@@ -147,7 +161,7 @@ export const generateSpotifySingleAlbumResponseForTest =
     return spotifySingleAlbumResponseSchema.parse(response)
   }
 
-export const generateAlbumSearchResponseForTest =
+export const generateSpotifyAlbumSearchResponseForTest =
   (): SpotifyAlbumSearchResponse => {
     const response = {
       albums: {

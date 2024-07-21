@@ -29,12 +29,8 @@ export function isApiUser(obj: unknown): obj is ApiUser {
   return apiUserSchema.safeParse(obj).success
 }
 
-export const apiUsersWithPaginationSchema = paginationSchema.extend({
+export const apiPagedUsersSchema = paginationSchema.extend({
   users: z.array(apiUserSchema),
 })
 
-export type ApiUsers = z.infer<typeof apiUsersWithPaginationSchema>
-
-export function isApiUsersWithPagination(obj: unknown): obj is ApiUsers {
-  return apiUsersWithPaginationSchema.safeParse(obj).success
-}
+export type ApiPagedUsers = z.infer<typeof apiPagedUsersSchema>

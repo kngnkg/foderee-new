@@ -1,37 +1,26 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
-import { errInternal, errResponse } from '@/app/api/response'
+import { getSearchParams } from '@/app/api/request'
+import { handleError } from '@/app/api/response'
+import { transformBffAlbumSimplified } from '@/lib/transform/bff-album'
 import { searchAlbums } from '@/service/albums/search-albums'
-import { BffErrorType } from '@/types/bff-error'
-import { isSearchParams } from '@/types/pagination'
 
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams
-    const q = searchParams.get('q')
-    if (!q) {
-      return errResponse('q is required', BffErrorType.BadRequest)
-    }
-    const offsetStr = searchParams.get('offset')
-    const limitStr = searchParams.get('limit')
+    const params = getSearchParams(request)
 
-    const params = {
-      q,
-      offset: offsetStr ? parseInt(offsetStr) : undefined,
-      limit: limitStr ? parseInt(limitStr) : undefined,
-    }
-    if (!isSearchParams(params)) {
-      return errResponse('invalid query', BffErrorType.BadRequest)
-    }
+    const pagedAlbums = await searchAlbums(params)
 
-    const albumsWP = await searchAlbums(params)
-    if (!albumsWP) {
-      return errResponse('album not found', BffErrorType.EntityNotFound)
-    }
-
-    return NextResponse.json(albumsWP)
+    return NextResponse.json({
+      albums: pagedAlbums.albums.map((album) =>
+        transformBffAlbumSimplified(album),
+      ),
+      offset: pagedAlbums.offset,
+      limit: pagedAlbums.limit,
+      total: pagedAlbums.total,
+    })
   } catch (e) {
-    return errInternal(e)
+    return handleError(e)
   }
 }

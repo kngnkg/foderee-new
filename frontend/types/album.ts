@@ -44,11 +44,7 @@ export const albumSimplifiedSchema = albumSchema.pick({
   releaseDate: true,
 })
 
-export function isAlbumSimplified(obj: unknown): obj is AlbumSimplified {
-  return albumSimplifiedSchema.safeParse(obj).success
-}
-
-export const albumsWithPaginationSchema = paginationSchema.extend({
+export const pagedAlbums = paginationSchema.extend({
   albums: z.array(albumSimplifiedSchema),
 })
 
@@ -57,4 +53,4 @@ export type ArtistSimplified = z.infer<typeof artistSimplifiedSchema>
 export type Track = z.infer<typeof trackSchema>
 export type Album = z.infer<typeof albumSchema>
 export type AlbumSimplified = z.infer<typeof albumSimplifiedSchema>
-export type AlbumsWithPagination = z.infer<typeof albumsWithPaginationSchema>
+export type PagedAlbums = z.infer<typeof pagedAlbums>
