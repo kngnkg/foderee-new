@@ -16,9 +16,9 @@ export async function GET(request: NextRequest, context: UserRouteContext) {
 
     const paginationParams = getPaginationParamsFromRequest(request)
 
-    const usersWP = await listFollowees(params.username, paginationParams)
+    const pagedUsers = await listFollowees(params.username, paginationParams)
 
-    return NextResponse.json(usersWP)
+    return NextResponse.json(pagedUsers)
   } catch (e) {
     if (e instanceof AppError && e.type === AppErrorType.EntityNotFoundError) {
       return errResponse('user not found', BffErrorType.EntityNotFound)

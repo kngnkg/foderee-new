@@ -47,14 +47,8 @@ export function isUser(obj: unknown): obj is User {
   return userSchema.safeParse(obj).success
 }
 
-export const usersWithPaginationSchema = paginationSchema.extend({
+export const pagedUsers = paginationSchema.extend({
   users: z.array(userSchema),
 })
 
-export type UsersWithPagination = z.infer<typeof usersWithPaginationSchema>
-
-export function isUsersWithPagination(
-  obj: unknown,
-): obj is UsersWithPagination {
-  return usersWithPaginationSchema.safeParse(obj).success
-}
+export type PagedUsers = z.infer<typeof pagedUsers>

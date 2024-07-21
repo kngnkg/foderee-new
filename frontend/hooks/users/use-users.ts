@@ -1,6 +1,6 @@
 import { clientFetcher } from '@/lib/client-fetcher'
 import { transformUser } from '@/lib/transform/bff-user'
-import type { UsersWithPagination } from '@/types/user'
+import type { PagedUsers } from '@/types/user'
 import useSWRInfinite from 'swr/infinite'
 
 interface UseUsersProps {
@@ -9,7 +9,7 @@ interface UseUsersProps {
 }
 
 interface UseUsers {
-  data: UsersWithPagination[] | undefined
+  data: PagedUsers[] | undefined
   error: Error | undefined
   isLoading: boolean
   isValidating: boolean
@@ -19,7 +19,7 @@ interface UseUsers {
 const fetcher = async (
   resource: RequestInfo,
   init?: RequestInit,
-): Promise<UsersWithPagination> => {
+): Promise<PagedUsers> => {
   const data = await clientFetcher(resource, init)
   // TODO: エラーハンドリング
 
@@ -33,7 +33,7 @@ const fetcher = async (
 }
 
 export const useUsers = ({ endpoint, limit = 10 }: UseUsersProps): UseUsers => {
-  const getKey = (pageIndex: number, previousPageData: UsersWithPagination) => {
+  const getKey = (pageIndex: number, previousPageData: PagedUsers) => {
     // 最後に到達した場合
     if (previousPageData && previousPageData.offset >= previousPageData.total) {
       return null
@@ -49,7 +49,7 @@ export const useUsers = ({ endpoint, limit = 10 }: UseUsersProps): UseUsers => {
   }
 
   const { data, error, isLoading, isValidating, size, setSize } =
-    useSWRInfinite<UsersWithPagination>(getKey, fetcher)
+    useSWRInfinite<PagedUsers>(getKey, fetcher)
 
   // 次のページを読み込む
   const loadMore = () => setSize(size + 1)
