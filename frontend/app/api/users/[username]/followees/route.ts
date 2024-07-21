@@ -1,7 +1,9 @@
+import type { UserRouteContext } from '@/app/api/request'
+import {
+  getPaginationParamsFromRequest,
+  userRouteContextSchema,
+} from '@/app/api/request'
 import { errResponse, handleError } from '@/app/api/response'
-import type { UserRouteContext } from '@/app/api/route-context'
-import { userRouteContextSchema } from '@/app/api/route-context'
-import { getPaginationParamsFromRequest } from '@/app/api/utils'
 import { listFollowees } from '@/service/users/list-followees'
 import { BffErrorType } from '@/types/bff-error'
 import { AppError, AppErrorType } from '@/types/error'

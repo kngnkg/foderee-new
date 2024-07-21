@@ -1,8 +1,9 @@
 import { AppError, AppErrorType } from '@/types/error'
-import type { SearchParams } from '@/types/pagination'
+import type { PaginationParams, SearchParams } from '@/types/pagination'
 import { searchParamsSchema } from '@/types/pagination'
+import { usernameSchema } from '@/types/user'
 import type { NextRequest } from 'next/server'
-import { ZodError } from 'zod'
+import { ZodError, z } from 'zod'
 
 export const getSearchParams = (request: NextRequest): SearchParams => {
   try {
@@ -20,3 +21,24 @@ export const getSearchParams = (request: NextRequest): SearchParams => {
     throw e
   }
 }
+
+export function getPaginationParamsFromRequest(
+  request: NextRequest,
+): PaginationParams {
+  const searchParams = request.nextUrl.searchParams
+  const offsetStr = searchParams.get('offset')
+  const limitStr = searchParams.get('limit')
+
+  return {
+    offset: offsetStr ? parseInt(offsetStr) : undefined,
+    limit: limitStr ? parseInt(limitStr) : undefined,
+  }
+}
+
+export const userRouteContextSchema = z.object({
+  params: z.object({
+    username: usernameSchema,
+  }),
+})
+
+export type UserRouteContext = z.infer<typeof userRouteContextSchema>
