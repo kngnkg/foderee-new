@@ -3,15 +3,21 @@
  */
 
 import { GET } from '@/app/api/album-search/route'
+import { handleError } from '@/app/api/response'
 import { generateAlbumSimplifiedForTest } from '@/lib/testutil/albums'
 import { transformBffAlbumSimplified } from '@/lib/transform/bff-album'
 import { searchAlbums } from '@/service/albums/search-albums'
-import { BffErrorType } from '@/types/bff-error'
 import { NextRequest } from 'next/server'
 
 jest.mock('@/service/albums/search-albums', () => ({
   searchAlbums: jest.fn(),
 }))
+
+jest.mock('@/app/api/response', () => {
+  return {
+    handleError: jest.fn(),
+  }
+})
 
 describe('/api/album-search', () => {
   beforeEach(() => {
@@ -20,10 +26,11 @@ describe('/api/album-search', () => {
 
   describe('GET', () => {
     const mockSearchAlbums = searchAlbums as jest.Mock
+    const mockHandleError = handleError as jest.Mock
 
     it('アルバムが存在する場合はステータスコード200とアルバムリストを返す', async () => {
       const request = new NextRequest(
-        'https://example.com/api/album-search?q=foo',
+        'https://example.com/api/album-search?q=foo&offset=0&limit=20',
       )
 
       const mockAlbumData = {
@@ -76,49 +83,16 @@ describe('/api/album-search', () => {
       expect(body).toEqual(expected)
     })
 
-    it('クエリパラメータqがない場合はステータスコード400を返す', async () => {
-      const request = new NextRequest('https://example.com/api/album-search')
-
-      const response = await GET(request)
-      const body = await response.json()
-
-      expect(response.status).toBe(400)
-      expect(body).toEqual({
-        message: 'q is required',
-        type: BffErrorType.BadRequest,
-      })
-    })
-
-    it('クエリパラメータが不正な場合はステータスコード400を返す', async () => {
-      const request = new NextRequest(
-        'https://example.com/api/album-search?q=foo&offset=invalid',
-      )
-
-      const response = await GET(request)
-      const body = await response.json()
-
-      expect(response.status).toBe(400)
-      expect(body).toEqual({
-        message: 'invalid query',
-        type: BffErrorType.BadRequest,
-      })
-    })
-
-    it('その他のエラーが発生した場合はステータスコード500を返す', async () => {
+    it('エラーが発生した場合はhandleErrorが呼ばれる', async () => {
       const request = new NextRequest(
         'https://example.com/api/album-search?q=foo',
       )
+      const errObj = new Error('error')
+      mockSearchAlbums.mockRejectedValueOnce(errObj)
 
-      mockSearchAlbums.mockRejectedValueOnce(new Error('error'))
+      await GET(request)
 
-      const response = await GET(request)
-      const body = await response.json()
-
-      expect(response.status).toBe(500)
-      expect(body).toEqual({
-        message: 'Internal Server Error',
-        type: BffErrorType.InternalServerError,
-      })
+      expect(mockHandleError).toHaveBeenCalledWith(errObj)
     })
   })
 })

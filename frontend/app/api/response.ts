@@ -35,24 +35,6 @@ export const errResponse = (
   return NextResponse.json(body, { status: statusCode })
 }
 
-export const errInternal = (e: unknown): NextResponse => {
-  if (e instanceof Error) {
-    if (e instanceof AppError) {
-      console.error(`AppError: ${e.message}`)
-    } else {
-      console.error(`error: ${e.message}`)
-    }
-
-    return errResponse(
-      'Internal Server Error',
-      BffErrorType.InternalServerError,
-    )
-  }
-
-  console.error(`unknown error: ${e}`)
-  return errResponse('Internal Server Error', BffErrorType.InternalServerError)
-}
-
 export const handleError = (e: unknown): NextResponse => {
   const internalServerErrorResp = errResponse(
     'Internal Server Error',

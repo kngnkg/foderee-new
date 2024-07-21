@@ -1,4 +1,4 @@
-import { errInternal, errResponse } from '@/app/api/response'
+import { errResponse, handleError } from '@/app/api/response'
 import type { UserRouteContext } from '@/app/api/route-context'
 import { userRouteContextSchema } from '@/app/api/route-context'
 import { getPaginationParamsFromRequest } from '@/app/api/utils'
@@ -22,6 +22,6 @@ export async function GET(request: NextRequest, context: UserRouteContext) {
       return errResponse('user not found', BffErrorType.EntityNotFound)
     }
 
-    return errInternal(e)
+    return handleError(e)
   }
 }
