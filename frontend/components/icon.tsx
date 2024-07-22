@@ -9,6 +9,7 @@ import {
   Pencil2Icon,
   PlusCircledIcon,
 } from '@radix-ui/react-icons'
+import { Loader2 } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 
@@ -23,6 +24,7 @@ interface IconProps {
     | 'filled-like'
     | 'comment'
     | 'add'
+    | 'loader'
   className?: string
   onClick?: () => void
 }
@@ -117,6 +119,10 @@ export const Icon: React.FC<IconProps> = ({
           role="img"
           {...props}
         />
+      )
+    case 'loader':
+      return (
+        <Loader2 className={cn(`${baseClassName} animate-spin`, className)} />
       )
     default:
       return null
