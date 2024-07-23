@@ -4,15 +4,16 @@ export function addPaginationParams(
   url: string,
   params: PaginationParams,
 ): string {
-  if (params.offset || params.limit) {
-    url += '?'
-    if (params.offset) {
-      url += `offset=${params.offset}&`
-    }
-    if (params.limit) {
-      url += `limit=${params.limit}`
-    }
-    url = url.replace(/&$/, '')
+  if (!params.offset && !params.limit) {
+    return url
   }
-  return url
+
+  url += '?'
+  if (params.offset !== undefined && params.offset !== null) {
+    url += `offset=${params.offset}&`
+  }
+  if (params.limit !== undefined && params.limit !== null) {
+    url += `limit=${params.limit}`
+  }
+  return url.replace(/&$/, '')
 }
