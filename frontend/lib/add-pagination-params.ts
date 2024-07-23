@@ -4,7 +4,10 @@ export function addPaginationParams(
   url: string,
   params: PaginationParams,
 ): string {
-  if (!params.offset && !params.limit) {
+  if (
+    (params.offset === undefined || params.offset === null) &&
+    (params.limit === undefined || params.limit === null)
+  ) {
     return url
   }
 
