@@ -3,7 +3,7 @@ import { getPaginationParams, userRouteContextSchema } from '@/app/api/request'
 import { errResponse, handleError } from '@/app/api/response'
 import { transformBffUser } from '@/lib/transform/bff-user'
 import { listFollowees } from '@/service/users/list-followees'
-import { BffErrorType } from '@/types/bff-error'
+import { BffErrorResponseType } from '@/types/bff/error-response'
 import { AppError, AppErrorType } from '@/types/error'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
@@ -24,11 +24,11 @@ export async function GET(request: NextRequest, context: UserRouteContext) {
     })
   } catch (e) {
     if (e instanceof ZodError) {
-      return errResponse('Invalid username', BffErrorType.BadRequest)
+      return errResponse('Invalid username', BffErrorResponseType.BadRequest)
     }
 
     if (e instanceof AppError && e.type === AppErrorType.EntityNotFoundError) {
-      return errResponse('User not found', BffErrorType.EntityNotFound)
+      return errResponse('User not found', BffErrorResponseType.EntityNotFound)
     }
 
     return handleError(e)

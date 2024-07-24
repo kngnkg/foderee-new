@@ -7,7 +7,7 @@ import { GET } from '@/app/api/users/[username]/followees/route'
 import { generateUserForTest } from '@/lib/testutil/users'
 import { transformBffUser } from '@/lib/transform/bff-user'
 import { listFollowees } from '@/service/users/list-followees'
-import { BffErrorType } from '@/types/bff-error'
+import { BffErrorResponseType } from '@/types/bff/error-response'
 import { AppError, AppErrorType } from '@/types/error'
 import { NextRequest } from 'next/server'
 
@@ -109,7 +109,7 @@ describe('/api/users/[username]/followees', () => {
 
       expect(mockErrResponse).toHaveBeenCalledWith(
         'Invalid username',
-        BffErrorType.BadRequest,
+        BffErrorResponseType.BadRequest,
       )
     })
 
@@ -129,7 +129,7 @@ describe('/api/users/[username]/followees', () => {
 
       expect(mockErrResponse).toHaveBeenCalledWith(
         'User not found',
-        BffErrorType.EntityNotFound,
+        BffErrorResponseType.EntityNotFound,
       )
     })
 
