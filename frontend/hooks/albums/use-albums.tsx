@@ -1,9 +1,15 @@
-import type { PagedAlbums } from '@/types/album'
+import { type PagedAlbums } from '@/types/album'
 import useSWRInfinite from 'swr/infinite'
 
 import { env } from '@/env.mjs'
 import { clientFetcher } from '@/lib/client-fetcher'
+import { getURLWithSearchParams } from '@/lib/get-url-with-params'
+import { hasFetchedAllPages } from '@/lib/has-fetched-all-pages'
 import { transformAlbumSimplified } from '@/lib/transform/bff-album'
+import { pagedBffAlbums } from '@/types/bff/album'
+import { AppError, AppErrorType } from '@/types/error'
+import type { Pagination } from '@/types/pagination'
+import { ZodError } from 'zod'
 
 interface UseAlbumsProps {
   query: string
@@ -11,57 +17,66 @@ interface UseAlbumsProps {
 }
 
 interface UseAlbums {
-  data: PagedAlbums[] | undefined
+  pagedAlbumsList: PagedAlbums[] | undefined
   error: Error | undefined
   isLoading: boolean
+  isLoadingMore: boolean | undefined
+  isReachingEnd: boolean
   isValidating: boolean
   loadMore: () => void
 }
 
-const fetcher = async (
+export const albumFetcher = async (
   resource: RequestInfo,
   init?: RequestInit,
 ): Promise<PagedAlbums> => {
-  const data = await clientFetcher(resource, init)
-  // TODO: エラーハンドリング
+  try {
+    const data = await clientFetcher(resource, init)
 
-  return {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    albums: data.albums.map((album: any) => transformAlbumSimplified(album)),
-    offset: data.offset,
-    limit: data.limit,
-    total: data.total,
+    const parsed = pagedBffAlbums.parse(data)
+
+    return {
+      albums: parsed.albums.map((album) => transformAlbumSimplified(album)),
+      offset: parsed.offset,
+      limit: parsed.limit,
+      total: parsed.total,
+    }
+  } catch (e) {
+    if (e instanceof ZodError) {
+      throw new AppError(
+        'APIからのレスポンスの形式が不正です',
+        AppErrorType.InvalidDataReceivedError,
+      )
+    }
+
+    throw e
   }
 }
 
 export const useAlbums = ({ query, limit = 20 }: UseAlbumsProps): UseAlbums => {
-  const endpoint = `${env.NEXT_PUBLIC_API_URL}/album-search?q=${query}`
+  const endpoint = `${env.NEXT_PUBLIC_API_URL}/album-search`
 
-  const getKey = (pageIndex: number, previousPageData: PagedAlbums) => {
-    // 検索クエリがない場合
-    if (query === '') {
-      return null
-    }
-
-    // 最後に到達した場合
-    if (previousPageData && previousPageData.offset >= previousPageData.total) {
-      return null
-    }
-
-    // 最初のページの場合
-    if (pageIndex === 0) {
-      return `${endpoint}&offset=0&limit=${limit}`
-    }
-
-    const nextOffset = previousPageData.offset + previousPageData.limit
-    return `${endpoint}&offset=${nextOffset}&limit=${limit}`
-  }
+  const getKey = (pageIndex: number, previousPage: Pagination) =>
+    getURLWithSearchParams(endpoint, query, limit, pageIndex, previousPage)
 
   const { data, error, isLoading, isValidating, size, setSize } =
-    useSWRInfinite<PagedAlbums>(getKey, fetcher)
+    useSWRInfinite<PagedAlbums>(getKey, albumFetcher)
+
+  const isLoadingMore =
+    isLoading || (size > 0 && data && typeof data[size - 1] === 'undefined')
+
+  const isReachingEnd = hasFetchedAllPages(data)
 
   // 次のページを読み込む
   const loadMore = () => setSize(size + 1)
 
-  return { data, error, isLoading, isValidating, loadMore }
+  return {
+    pagedAlbumsList: data,
+    error,
+    isLoading,
+    isLoadingMore,
+    isReachingEnd,
+    isValidating,
+    loadMore,
+  }
 }
