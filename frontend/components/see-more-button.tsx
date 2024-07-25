@@ -16,15 +16,14 @@ export const SeeMoreButton: React.FC<SeeMoreButtonProps> = ({
 }) => {
   return (
     <Button
+      id="see-more-button"
       variant="ghost"
       size="lg"
       className={className}
       disabled={isLoading}
-      // disabled
       onClick={() => loadMore()}
     >
       {isLoading ? <Icon type="loader" /> : <> もっと見る</>}
-      {/* <Icon type="loader" /> */}
     </Button>
   )
 }
