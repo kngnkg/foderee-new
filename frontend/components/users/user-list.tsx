@@ -1,55 +1,31 @@
-'use client'
-
-import type { User } from '@/types/user'
-import { Suspense } from 'react'
-
 import { FollowButton } from '@/components/follow-button'
-import { useUsers } from '@/hooks/users/use-users'
-
-import { Button } from '@/components/ui/button'
 import { UserCard } from '@/components/user-card'
-import { UserListSkeleton } from '@/components/users/user-list-skeleton'
-import { UserSkeleton } from '@/components/users/user-skeleton'
+import { cn } from '@/lib/utils'
+import type { PagedUsers } from '@/types/user'
 
 interface UserListProps {
-  endpoint: string
+  pagedUsersList: PagedUsers[]
+  className?: string
 }
 
-export const UserList: React.FC<UserListProps> = ({ endpoint }) => {
-  const { data, error, isLoading, loadMore } = useUsers({
-    endpoint,
-  })
-
-  if (error) {
-    console.error(error)
-    return <p>Something went wrong.</p>
-  }
-
+export const UserList: React.FC<UserListProps> = ({
+  pagedUsersList,
+  className,
+}) => {
   return (
-    <div className="flex flex-col gap-4">
-      {data ? (
-        <>
-          {data.map((pagedUsers, idx) => (
-            <>
-              {pagedUsers.users.map((user: User) => (
-                <div key={idx} className="flex items-center justify-between">
-                  <Suspense fallback={<UserSkeleton />}>
-                    <UserCard user={user} cardSize="s" />
-                    <FollowButton user={user} />
-                  </Suspense>
-                </div>
-              ))}
-            </>
-          ))}
-        </>
-      ) : (
-        <>{isLoading ? <UserListSkeleton count={10} /> : <p>No Content.</p>}</>
-      )}
-      <div className="mb-20 flex flex-col items-center">
-        <Button variant="ghost" size="lg" onClick={() => loadMore()}>
-          もっと見る
-        </Button>
-      </div>
+    <div className={cn('flex flex-col gap-4', className)}>
+      {pagedUsersList.map((pagedUsers, idx) => {
+        return (
+          <ul key={idx} className="flex flex-col gap-4">
+            {pagedUsers.users.map((user, idx) => (
+              <li key={idx} className="flex items-center justify-between">
+                <UserCard user={user} cardSize="s" />
+                <FollowButton user={user} />
+              </li>
+            ))}
+          </ul>
+        )
+      })}
     </div>
   )
 }
