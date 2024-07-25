@@ -21,8 +21,8 @@ describe('UserListDialog', () => {
     jest.resetAllMocks()
   })
 
-  it('与えられたタイプをもとに正しくレンダリングされる', async () => {
-    mockUseUsers.mockReturnValue({
+  it('与えられたタイプをもとに初期表示が正しくレンダリングされる', async () => {
+    mockUseUsers.mockReturnValueOnce({
       pagedUsersList: [],
       error: undefined,
       isLoading: false,
@@ -42,7 +42,7 @@ describe('UserListDialog', () => {
   })
 
   it('トリガーをクリックするとダイアログが開く', async () => {
-    mockUseUsers.mockReturnValue({
+    mockUseUsers.mockReturnValueOnce({
       pagedUsersList: null,
       error: null,
       isLoading: false,
@@ -74,7 +74,7 @@ describe('UserListDialog', () => {
       },
     ]
 
-    mockUseUsers.mockReturnValue({
+    mockUseUsers.mockReturnValueOnce({
       pagedUsersList: mockPagedUsersList,
       error: null,
       isLoading: false,
@@ -96,9 +96,31 @@ describe('UserListDialog', () => {
     })
   })
 
+  it('最後に到達した場合はもっと見るボタンを表示しない', async () => {
+    const mockUser = generateUserForTest()
+
+    mockUseUsers.mockReturnValueOnce({
+      pagedUsersList: null,
+      error: null,
+      isLoading: false,
+      isLoadingMore: undefined,
+      isReachingEnd: true,
+      loadMore: jest.fn(),
+    })
+
+    render(<UserListDialog type="followers" user={mockUser} />)
+
+    // ダイアログトリガーをクリック
+    fireEvent.click(screen.getByText(`${mockUser.followersCount} フォロワー`))
+
+    await waitFor(() => {
+      expect(screen.queryByText('もっと見る')).not.toBeInTheDocument()
+    })
+  })
+
   it('エラーが発生した場合はエラーメッセージを表示する', async () => {
     const mockUser = generateUserForTest()
-    mockUseUsers.mockReturnValue({
+    mockUseUsers.mockReturnValueOnce({
       pagedUsersList: null,
       error: new Error('Failed to fetch'),
       isLoading: false,
