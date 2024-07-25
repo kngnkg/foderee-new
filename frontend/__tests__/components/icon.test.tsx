@@ -49,6 +49,11 @@ describe('Icon', () => {
     expect(screen.getByRole('img')).toBeInTheDocument()
   })
 
+  it('アイコンタイプ "loader" が正しくレンダリングされる', async () => {
+    const { container } = render(<Icon type="loader" />)
+    expect(container.querySelector('svg')).toBeInTheDocument()
+  })
+
   it('classNameが正しく適用される', () => {
     const className = 'custom-class'
     render(<Icon type="search" className={className} />)
