@@ -54,7 +54,7 @@ describe('listFollowees', () => {
     })
 
     expect(mockServerFetcher).toHaveBeenCalledWith(
-      `${env.API_URL}/users/${validUsername}/followees?limit=2`,
+      `${env.API_URL}/users/${validUsername}/followees?offset=0&limit=2`,
       { cache: 'no-store' },
     )
     expect(followees).toEqual(expected)
@@ -78,7 +78,7 @@ describe('listFollowees', () => {
     })
 
     expect(mockServerFetcher).toHaveBeenCalledWith(
-      `${env.API_URL}/users/${validUsername}/followees?limit=2`,
+      `${env.API_URL}/users/${validUsername}/followees?offset=0&limit=2`,
       { cache: 'no-store' },
     )
 

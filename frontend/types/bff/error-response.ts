@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export enum BffErrorType {
+export enum BffErrorResponseType {
   EntityNotFound = 'entity_not_found',
   EndpointNotFound = 'endpoint_not_found',
   Unauthorized = 'unauthorized',
@@ -9,13 +9,9 @@ export enum BffErrorType {
   InternalServerError = 'internal_server_error',
 }
 
-export const bffErrorSchema = z.object({
+export const bffErrorResponseSchema = z.object({
   message: z.string(),
-  type: z.nativeEnum(BffErrorType),
+  type: z.nativeEnum(BffErrorResponseType),
 })
 
-export type BffError = z.infer<typeof bffErrorSchema>
-
-export function isBffError(obj: unknown): obj is BffError {
-  return bffErrorSchema.safeParse(obj).success
-}
+export type BffErrorResponse = z.infer<typeof bffErrorResponseSchema>

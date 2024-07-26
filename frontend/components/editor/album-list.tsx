@@ -3,78 +3,48 @@
 import * as React from 'react'
 
 import { AlbumArt } from '@/components/album-art'
-import { Skeleton } from '@/components/ui/skeleton'
-import type { PagedAlbums } from '@/types/album'
+import { AlbumArtistsNames } from '@/components/album-artists-names'
+import { cn } from '@/lib/utils'
+import { type PagedAlbums } from '@/types/album'
 import { useFormContext } from 'react-hook-form'
 
 interface AlbumListProps {
+  pagedAlbumsList: PagedAlbums[]
   onClick: () => void
-  data: PagedAlbums[] | undefined
-  isLoading: boolean
+  className?: string
 }
 
 export const AlbumList: React.FC<AlbumListProps> = ({
-  data,
-  isLoading,
+  pagedAlbumsList,
   onClick,
+  className,
 }) => {
   const { setValue } = useFormContext()
 
-  if (!data) {
-    return (
-      <>
-        {isLoading ? (
-          <div className="flex flex-col gap-4">
-            {Array(10)
-              .fill(null)
-              .map((_, idx) => (
-                <div key={idx} className="flex items-center gap-4">
-                  <Skeleton className="size-14" />
-                  <Skeleton className="h-6 w-48" />
-                </div>
-              ))}
-          </div>
-        ) : (
-          <p>no data.</p>
-        )}
-      </>
-    )
-  }
-
-  // TODO: suspense
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-4">
-        {data.map((pagedAlbums, idx) => {
-          return (
-            <ul key={idx} className="flex flex-col gap-4">
-              {pagedAlbums.albums.map((album, idx) => (
-                <li
-                  key={idx}
-                  className="flex cursor-pointer items-center gap-4"
-                  onClick={() => {
-                    setValue('album', album)
-                    onClick()
-                  }}
-                >
-                  <AlbumArt album={album} size="s" />
-                  <div className="flex flex-col gap-1 text-left">
-                    <div className="text-sm sm:text-base">{album.name}</div>
-                    <div className="text-xs sm:text-sm">
-                      {album.artists.map((artist, idx) => (
-                        <span key={idx}>
-                          {artist.name}
-                          {idx !== album.artists.length - 1 && ', '}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )
-        })}
-      </div>
+    <div className={cn('flex flex-col gap-4', className)}>
+      {pagedAlbumsList.map((pagedAlbums, idx) => {
+        return (
+          <ul key={idx} className="flex flex-col gap-4">
+            {pagedAlbums.albums.map((album, idx) => (
+              <li
+                key={idx}
+                className="flex cursor-pointer items-center gap-4"
+                onClick={() => {
+                  setValue('album', album)
+                  onClick()
+                }}
+              >
+                <AlbumArt album={album} size="s" />
+                <div className="flex flex-col gap-1 text-left">
+                  <div className="text-sm sm:text-base">{album.name}</div>
+                  <AlbumArtistsNames album={album} />
+                </div>
+              </li>
+            ))}
+          </ul>
+        )
+      })}
     </div>
   )
 }

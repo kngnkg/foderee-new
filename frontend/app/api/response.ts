@@ -1,26 +1,29 @@
-import { BffErrorType, type BffError } from '@/types/bff-error'
+import {
+  BffErrorResponseType,
+  type BffErrorResponse,
+} from '@/types/bff/error-response'
 import { AppError, AppErrorType } from '@/types/error'
 import { NextResponse } from 'next/server'
 
 export const errResponse = (
   message: string,
-  errType: BffErrorType,
+  errType: BffErrorResponseType,
 ): NextResponse => {
   let statusCode = 500
   switch (errType) {
-    case BffErrorType.BadRequest:
+    case BffErrorResponseType.BadRequest:
       statusCode = 400
       break
-    case BffErrorType.EntityNotFound:
+    case BffErrorResponseType.EntityNotFound:
       statusCode = 404
       break
-    case BffErrorType.EndpointNotFound:
+    case BffErrorResponseType.EndpointNotFound:
       statusCode = 404
       break
-    case BffErrorType.Forbidden:
+    case BffErrorResponseType.Forbidden:
       statusCode = 403
       break
-    case BffErrorType.Unauthorized:
+    case BffErrorResponseType.Unauthorized:
       statusCode = 401
       break
     default: // InternalServerError
@@ -28,7 +31,7 @@ export const errResponse = (
       break
   }
 
-  const body: BffError = {
+  const body: BffErrorResponse = {
     message,
     type: errType,
   }
@@ -38,7 +41,7 @@ export const errResponse = (
 export const handleError = (e: unknown): NextResponse => {
   const internalServerErrorResp = errResponse(
     'Internal Server Error',
-    BffErrorType.InternalServerError,
+    BffErrorResponseType.InternalServerError,
   )
 
   if (e instanceof Error) {
@@ -47,10 +50,13 @@ export const handleError = (e: unknown): NextResponse => {
         case AppErrorType.InvalidRequestError:
           return errResponse(
             'Invalid query parameters',
-            BffErrorType.BadRequest,
+            BffErrorResponseType.BadRequest,
           )
         case AppErrorType.EntityNotFoundError:
-          return errResponse('Entity not found', BffErrorType.EntityNotFound)
+          return errResponse(
+            'Entity not found',
+            BffErrorResponseType.EntityNotFound,
+          )
         case AppErrorType.UnknownError:
           console.error(`AppError: ${e.message}`, e.stack)
           return internalServerErrorResp

@@ -3,21 +3,21 @@
  */
 
 import { errResponse, handleError } from '@/app/api/response'
-import { BffErrorType } from '@/types/bff-error'
+import { BffErrorResponseType } from '@/types/bff/error-response'
 import { AppError, AppErrorType } from '@/types/error'
 
 describe('errResponse', () => {
   it('エラータイプが正しくセットされること', async () => {
     const response = errResponse(
       'Internal Server Error',
-      BffErrorType.InternalServerError,
+      BffErrorResponseType.InternalServerError,
     )
     const body = await response.json()
 
     expect(response.status).toBe(500)
     expect(body).toEqual({
       message: 'Internal Server Error',
-      type: BffErrorType.InternalServerError,
+      type: BffErrorResponseType.InternalServerError,
     })
   })
 
@@ -25,78 +25,81 @@ describe('errResponse', () => {
     it('リクエストが不正な場合はステータスコード400を返す', async () => {
       const response = errResponse(
         'Invalid query parameters',
-        BffErrorType.BadRequest,
+        BffErrorResponseType.BadRequest,
       )
       const body = await response.json()
 
       expect(response.status).toBe(400)
       expect(body).toEqual({
         message: 'Invalid query parameters',
-        type: BffErrorType.BadRequest,
+        type: BffErrorResponseType.BadRequest,
       })
     })
 
     it('エンティティが見つからなかった場合はステータスコード404を返す', async () => {
       const response = errResponse(
         'Entity not found',
-        BffErrorType.EntityNotFound,
+        BffErrorResponseType.EntityNotFound,
       )
       const body = await response.json()
 
       expect(response.status).toBe(404)
       expect(body).toEqual({
         message: 'Entity not found',
-        type: BffErrorType.EntityNotFound,
+        type: BffErrorResponseType.EntityNotFound,
       })
     })
 
     it('エンドポイントが見つからなかった場合はステータスコード404を返す', async () => {
       const response = errResponse(
         'Endpoint not found',
-        BffErrorType.EndpointNotFound,
+        BffErrorResponseType.EndpointNotFound,
       )
       const body = await response.json()
 
       expect(response.status).toBe(404)
       expect(body).toEqual({
         message: 'Endpoint not found',
-        type: BffErrorType.EndpointNotFound,
+        type: BffErrorResponseType.EndpointNotFound,
       })
     })
 
     it('アクセスが拒否された場合はステータスコード403を返す', async () => {
-      const response = errResponse('Forbidden', BffErrorType.Forbidden)
+      const response = errResponse('Forbidden', BffErrorResponseType.Forbidden)
       const body = await response.json()
 
       expect(response.status).toBe(403)
       expect(body).toEqual({
         message: 'Forbidden',
-        type: BffErrorType.Forbidden,
+        type: BffErrorResponseType.Forbidden,
       })
     })
 
     it('認証が必要な場合はステータスコード401を返す', async () => {
-      const response = errResponse('Unauthorized', BffErrorType.Unauthorized)
+      const response = errResponse(
+        'Unauthorized',
+        BffErrorResponseType.Unauthorized,
+      )
       const body = await response.json()
 
       expect(response.status).toBe(401)
       expect(body).toEqual({
         message: 'Unauthorized',
-        type: BffErrorType.Unauthorized,
+        type: BffErrorResponseType.Unauthorized,
       })
     })
 
     it('その他のエラーの場合はステータスコード500を返す', async () => {
       const response = errResponse(
         'Internal Server Error',
-        BffErrorType.InternalServerError,
+        BffErrorResponseType.InternalServerError,
       )
       const body = await response.json()
 
       expect(response.status).toBe(500)
       expect(body).toEqual({
         message: 'Internal Server Error',
-        type: BffErrorType.InternalServerError,
+        type: BffErrorResponseType.InternalServerError,
       })
     })
   })
@@ -124,7 +127,7 @@ describe('handleError', () => {
       expect(response.status).toBe(400)
       expect(body).toEqual({
         message: 'Invalid query parameters',
-        type: BffErrorType.BadRequest,
+        type: BffErrorResponseType.BadRequest,
       })
     })
 
@@ -144,7 +147,7 @@ describe('handleError', () => {
       expect(response.status).toBe(404)
       expect(body).toEqual({
         message: 'Entity not found',
-        type: BffErrorType.EntityNotFound,
+        type: BffErrorResponseType.EntityNotFound,
       })
     })
 
@@ -167,7 +170,7 @@ describe('handleError', () => {
       expect(response.status).toBe(500)
       expect(body).toEqual({
         message: 'Internal Server Error',
-        type: BffErrorType.InternalServerError,
+        type: BffErrorResponseType.InternalServerError,
       })
     })
   })
@@ -188,7 +191,7 @@ describe('handleError', () => {
     expect(response.status).toBe(500)
     expect(body).toEqual({
       message: 'Internal Server Error',
-      type: BffErrorType.InternalServerError,
+      type: BffErrorResponseType.InternalServerError,
     })
   })
 })
@@ -209,7 +212,7 @@ it('AppError以外のエラーの場合はコンソールに出力してInternal
   expect(response.status).toBe(500)
   expect(body).toEqual({
     message: 'Internal Server Error',
-    type: BffErrorType.InternalServerError,
+    type: BffErrorResponseType.InternalServerError,
   })
 })
 
@@ -226,6 +229,6 @@ it('Error型以外が投げられた場合はコンソールに出力してInter
   expect(response.status).toBe(500)
   expect(body).toEqual({
     message: 'Internal Server Error',
-    type: BffErrorType.InternalServerError,
+    type: BffErrorResponseType.InternalServerError,
   })
 })
