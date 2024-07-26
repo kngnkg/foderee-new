@@ -37,6 +37,14 @@ describe('UserList', () => {
     })
   })
 
+  it('pagedUsersListが空の場合は何も表示しない', async () => {
+    const mockData: PagedUsers[] = []
+
+    render(<UserList pagedUsersList={mockData} />)
+
+    expect(screen.queryByRole('list')).toBeNull()
+  })
+
   it('classNameが正しく適用される', async () => {
     const mockData: PagedUsers[] = [
       {
